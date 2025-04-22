@@ -72,9 +72,9 @@ public class Labyrinth extends JPanel {
 
                 // Ouvrir le passage en supprimant le mur entre les cellules
                 if (x1 == x2) {  // Mur vertical
-                    maze[Math.min(y1, y2)][x1].setCellVal(CellType.WALL);
+                    maze[Math.min(y1, y2)][x1].setCellVal(CellType.POINT);
                 } else {  // Mur horizontal
-                    maze[y1][Math.min(x1, x2)].setCellVal(CellType.WALL);
+                    maze[y1][Math.min(x1, x2)].setCellVal(CellType.POINT);
                 }
             }
         }
@@ -84,62 +84,62 @@ public class Labyrinth extends JPanel {
         //si c'est un coin
 
         //haut-gauche
-        if((maze[0][0].cellval == CellType.WALL.getValue())
-        &&(maze[1][0].cellval == CellType.POINT.getValue())
-        &&(maze[0][1].cellval == CellType.POINT.getValue()))
+        if((maze[0][0].cellval == CellType.POINT.getValue())
+        &&(maze[1][0].cellval == CellType.WALL.getValue())
+        &&(maze[0][1].cellval == CellType.WALL.getValue()))
         {
-            maze[0][1].setCellVal(CellType.WALL);
+            maze[0][1].setCellVal(CellType.POINT);
         }
 
         //haut droite
-        if((maze[COLS-1][0].cellval == CellType.WALL.getValue())
-        &&(maze[COLS-2][0].cellval == CellType.POINT.getValue())
-        &&(maze[COLS-1][1].cellval == CellType.POINT.getValue()))
+        if((maze[COLS-1][0].cellval == CellType.POINT.getValue())
+        &&(maze[COLS-2][0].cellval == CellType.WALL.getValue())
+        &&(maze[COLS-1][1].cellval == CellType.WALL.getValue()))
         {
-            maze[COLS-1][1].setCellVal(CellType.WALL);
+            maze[COLS-1][1].setCellVal(CellType.POINT);
         }
 
         //bas droite
-        if((maze[COLS-1][ROWS-1].cellval == CellType.WALL.getValue())
-        &&(maze[COLS-2][ROWS-1].cellval == CellType.POINT.getValue())
-        &&(maze[COLS-1][ROWS-2].cellval == CellType.POINT.getValue()))
+        if((maze[COLS-1][ROWS-1].cellval == CellType.POINT.getValue())
+        &&(maze[COLS-2][ROWS-1].cellval == CellType.WALL.getValue())
+        &&(maze[COLS-1][ROWS-2].cellval == CellType.WALL.getValue()))
         {
-            maze[COLS-1][ROWS-2].setCellVal(CellType.WALL);
+            maze[COLS-1][ROWS-2].setCellVal(CellType.POINT);
         }
 
         //bas gauche
-        if((maze[0][ROWS-1].cellval == CellType.WALL.getValue())
-        &&(maze[0][ROWS-2].cellval == CellType.POINT.getValue())
-        &&(maze[1][ROWS-1].cellval == CellType.POINT.getValue()))
+        if((maze[0][ROWS-1].cellval == CellType.POINT.getValue())
+        &&(maze[0][ROWS-2].cellval == CellType.WALL.getValue())
+        &&(maze[1][ROWS-1].cellval == CellType.WALL.getValue()))
         {
-            maze[1][ROWS-1].setCellVal(CellType.WALL);
+            maze[1][ROWS-1].setCellVal(CellType.POINT);
         }
 
        //si c'est une case au niveau de la bordure
         for (int x = 1; x < COLS-1; x++) {
 
-            if(maze[x][1].cellval == CellType.WALL.getValue()){
+            if(maze[x][1].cellval == CellType.POINT.getValue()){
                 
                 //bordure du haut
-                 if((maze[x-1][0].cellval == CellType.POINT.getValue())
-                 &&(maze[x+1][0].cellval == CellType.POINT.getValue())
-                 &&(maze[x][1].cellval == CellType.POINT.getValue())) 
+                 if((maze[x-1][0].cellval == CellType.WALL.getValue())
+                 &&(maze[x+1][0].cellval == CellType.WALL.getValue())
+                 &&(maze[x][1].cellval == CellType.WALL.getValue())) 
                 {
                     //on choisi un mur q'on enleve
-                    maze[x-1][0].setCellVal(CellType.WALL);
+                    maze[x-1][0].setCellVal(CellType.POINT);
                 }
                 
             }
 
              //bordure du bas
-            if(maze[x][ROWS-1].cellval == CellType.WALL.getValue()){
+            if(maze[x][ROWS-1].cellval == CellType.POINT.getValue()){
                
-                if((maze[x-1][ROWS-1].cellval== CellType.POINT.getValue())
-                &&(maze[x+1][ROWS-1].cellval == CellType.POINT.getValue())
-                &&(maze[x][ROWS-2].cellval == CellType.POINT.getValue()))
+                if((maze[x-1][ROWS-1].cellval== CellType.WALL.getValue())
+                &&(maze[x+1][ROWS-1].cellval == CellType.WALL.getValue())
+                &&(maze[x][ROWS-2].cellval == CellType.WALL.getValue()))
                 {
                     //on choisi un mur q'on enleve
-                    maze[x][ROWS-2].setCellVal(CellType.WALL);
+                    maze[x][ROWS-2].setCellVal(CellType.POINT);
                 }
             }
         }
@@ -147,28 +147,28 @@ public class Labyrinth extends JPanel {
         //sur les cotés
         for (int y= 1; y< COLS-1; y++) {
 
-            if(maze[0][y].cellval == CellType.WALL.getValue()){
+            if(maze[0][y].cellval == CellType.POINT.getValue()){
                 
                 //gauche
-                 if((maze[0][y-1].cellval == CellType.POINT.getValue())
-                 &&(maze[0][y+1].cellval == CellType.POINT.getValue())
-                 &&(maze[1][y].cellval == CellType.POINT.getValue()))
+                 if((maze[0][y-1].cellval == CellType.WALL.getValue())
+                 &&(maze[0][y+1].cellval == CellType.WALL.getValue())
+                 &&(maze[1][y].cellval == CellType.WALL.getValue()))
                  {
                     //on choisi un mur q'on enleve
-                    maze[1][y].setCellVal(CellType.WALL);
+                    maze[1][y].setCellVal(CellType.POINT);
                 }
                 
             }
 
-            if(maze[COLS-1][y].cellval == CellType.WALL.getValue()){
+            if(maze[COLS-1][y].cellval == CellType.POINT.getValue()){
                 
                 //droite
-                 if((maze[COLS-1][y-1].cellval == CellType.POINT.getValue())
-                 &&(maze[COLS-1][y+1].cellval == CellType.POINT.getValue())
-                 &&(maze[COLS-2][y].cellval == CellType.POINT.getValue()))
+                 if((maze[COLS-1][y-1].cellval == CellType.WALL.getValue())
+                 &&(maze[COLS-1][y+1].cellval == CellType.WALL.getValue())
+                 &&(maze[COLS-2][y].cellval == CellType.WALL.getValue()))
                  {
                     //on choisi un mur q'on enleve
-                    maze[COLS-2][y].setCellVal(CellType.WALL);
+                    maze[COLS-2][y].setCellVal(CellType.POINT);
                 }
                 
             }
@@ -180,14 +180,14 @@ public class Labyrinth extends JPanel {
 
             for (int y= 1; y< COLS-2; y++) {
 
-                if(maze[x][y].cellval == CellType.WALL.getValue()){
+                if(maze[x][y].cellval == CellType.POINT.getValue()){
 
-                    if((maze[x][y-1].cellval == CellType.POINT.getValue())
-                    &&(maze[x][y+1].cellval == CellType.POINT.getValue())
-                    &&(maze[x-1][y].cellval == CellType.POINT.getValue())
-                    &&(maze[x+1][y].cellval == CellType.POINT.getValue()))
+                    if((maze[x][y-1].cellval == CellType.WALL.getValue())
+                    &&(maze[x][y+1].cellval == CellType.WALL.getValue())
+                    &&(maze[x-1][y].cellval == CellType.WALL.getValue())
+                    &&(maze[x+1][y].cellval == CellType.WALL.getValue()))
                     {
-                        maze[x][y-1].setCellVal(CellType.WALL);
+                        maze[x][y-1].setCellVal(CellType.POINT);
                     }
 
                 }
@@ -240,7 +240,7 @@ public class Labyrinth extends JPanel {
 
         for (int x = 0; x < ROWS; x++) {
             for (int y = 0; y < COLS; y++) {
-                if( maze [x][y].cellval == CellType.WALL.getValue()){
+                if( maze [x][y].cellval == CellType.POINT.getValue()){
                     g.setColor(Color.BLACK);
                     g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     g.setColor(Color.WHITE);
@@ -260,11 +260,15 @@ public class Labyrinth extends JPanel {
 
         // Dessin des personnages
         if (personnages.ghost1 != null) {
-            g.drawImage(personnages.phJG, personnages.ghost1.x, personnages.ghost1.y, 45, 45, this);
-        }
-
-        if(personnages.ghost1 == null) {
-            System.err.println("Image perdue !");
+            g.setColor(Color.RED);
+            g.fillOval(
+                personnages.ghost1.x,
+                personnages.ghost1.y,
+                DOT_SIZE,
+                DOT_SIZE
+            );
+            //g.drawImage(personnages.phJG, personnages.ghost1.x, personnages.ghost1.y, 45, 45, this);
+            System.out.println("Position fantôme: " + personnages.ghost1.x + "," + personnages.ghost1.y);
         }
     }
 

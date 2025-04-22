@@ -52,8 +52,8 @@ public class Characters {
             x = rand.nextInt(19);
             y = rand.nextInt(19);
     
-            if (lab.maze[x][y].cellval == CellType.WALL.getValue()) {
-                ghost1 = new Ghosts(x * 50, y * 50,lab);
+            if (lab.maze[x][y].cellval == CellType.POINT.getValue()) {
+                ghost1 = new Ghosts(x*50, y*50, lab);
                 return;
             }
         }

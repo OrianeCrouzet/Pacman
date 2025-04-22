@@ -1,6 +1,6 @@
 public enum CellType {
-    POINT(0),   // Point à manger
-    WALL(1),    // Mur
+    POINT(1),   // Point à manger
+    WALL(0),    // Mur
     EMPTY(2),   // Case vide
     SIZE(40);   // Taille d'une cellule
 
