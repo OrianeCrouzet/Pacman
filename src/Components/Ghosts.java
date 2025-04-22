@@ -4,7 +4,9 @@ public class Ghosts {
     public int x, y;
     private char direction;
     private static final int SPEED = 4;
-    private static final int GHOST_SIZE = Cell.size - 5; // Marge interne
+    private static final int GHOST_SIZE = Cell.size - 7; // Marge interne
+    public static final int GHOST_WIDTH = Cell.size * 3/4;  // 75% de la cellule
+    public static final int GHOST_HEIGHT = Cell.size * 3/4;
     private final Labyrinth lab;
     private final Random random = new Random();
 

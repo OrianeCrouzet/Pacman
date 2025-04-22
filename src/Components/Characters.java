@@ -1,6 +1,10 @@
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Random;
+import javax.imageio.ImageIO;
 
 public class Characters {
 
@@ -53,7 +57,17 @@ public class Characters {
             y = rand.nextInt(19);
     
             if (lab.maze[x][y].cellval == CellType.POINT.getValue()) {
-                ghost1 = new Ghosts(x*50, y*50, lab);
+                // 1. Initialise la position du fantôme
+                ghost1 = new Ghosts(x * Cell.size, y * Cell.size, lab);
+                
+                // 2. Charge l'image AVANT de quitter la méthode
+                loadGhostImage();
+                
+                // Debug
+                System.out.printf("Fantôme placé en [%d,%d] | Image %s\n",
+                    ghost1.x, ghost1.y,
+                    (ghost_yellow_left != null ? "chargée (" + ghost_yellow_left.getWidth(null) + "x" + ghost_yellow_left.getHeight(null) + ")" : "manquante"));
+                
                 return;
             }
         }
@@ -61,6 +75,48 @@ public class Characters {
 
     public Ghosts getGhost1() {
         return ghost1;
+    }
+
+    public void loadGhostImage() {
+        try {
+            // Méthode garantie pour charger depuis les ressources
+            InputStream imgStream = getClass().getResourceAsStream("Images/ghost_yellow_left.png");
+            if (imgStream != null) {
+                // Conversion en format ARGB pour la transparence
+                BufferedImage original = ImageIO.read(imgStream);
+                BufferedImage compatible = new BufferedImage(
+                    original.getWidth(),
+                    original.getHeight(),
+                    BufferedImage.TYPE_INT_ARGB);
+                
+                Graphics2D g2d = compatible.createGraphics();
+                g2d.drawImage(original, 0, 0, null);
+                g2d.dispose();
+                
+                this.ghost_yellow_left = compatible;
+            } else {
+                throw new IOException("Fichier introuvable dans les ressources");
+            }
+        } catch (IOException e) {
+            System.err.println("Erreur de chargement : " + e.getMessage());
+            // Fallback visuel
+            this.ghost_yellow_left = createFallbackImage();
+        }
+    }
+
+    private BufferedImage createFallbackImage() {
+        BufferedImage img = new BufferedImage(45, 45, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        
+        // Dessin d'un fantôme de test (cercle rouge avec yeux)
+        g.setColor(Color.RED);
+        g.fillOval(5, 5, 35, 35);
+        g.setColor(Color.WHITE);
+        g.fillOval(15, 15, 8, 8);
+        g.fillOval(25, 15, 8, 8);
+        
+        g.dispose();
+        return img;
     }
     
 }

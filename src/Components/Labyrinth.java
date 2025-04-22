@@ -259,16 +259,16 @@ public class Labyrinth extends JPanel {
         }
 
         // Dessin des personnages
-        if (personnages.ghost1 != null) {
-            g.setColor(Color.RED);
-            g.fillOval(
-                personnages.ghost1.x,
-                personnages.ghost1.y,
-                DOT_SIZE,
-                DOT_SIZE
-            );
-            //g.drawImage(personnages.phJG, personnages.ghost1.x, personnages.ghost1.y, 45, 45, this);
-            System.out.println("Position fantôme: " + personnages.ghost1.x + "," + personnages.ghost1.y);
+        if (personnages.ghost1 != null && personnages.ghost_yellow_left != null) {
+            
+            // Position centrée dans la cellule
+            int drawX = personnages.ghost1.x + (Cell.size - Ghosts.GHOST_WIDTH)/2;
+            int drawY = personnages.ghost1.y + (Cell.size - Ghosts.GHOST_HEIGHT)/2;
+            
+            g.drawImage(personnages.ghost_yellow_left, 
+                       drawX, drawY, 
+                       Ghosts.GHOST_WIDTH, Ghosts.GHOST_HEIGHT, 
+                       this);
         }
     }
 
