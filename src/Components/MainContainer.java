@@ -1,7 +1,5 @@
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.*;
 
 
@@ -18,22 +16,14 @@ public class MainContainer{
         frame.add(lab,BorderLayout.CENTER);
         frame.setTitle("PACMAN");
         frame.setVisible(true);
-        timer=new Timer(30, new ActionListener(){
-
-            @Override
-            public void actionPerformed(ActionEvent e){
-               lab.personnages.ghost1.move();
-               lab.repaint();
-
-
-            }
+        timer=new Timer(30, (ActionEvent e) -> {
+            lab.personnages.ghost1.move();
+            lab.repaint();
         });
 
         timer.start();
 
-     
     }
-
 
 }
 

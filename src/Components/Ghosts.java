@@ -7,7 +7,7 @@ public class Ghosts {
     static int speed = 4;
     Labyrinth lab;
     private static final int GHOST_SIZE = Cell.size - 2; // Slightly smaller than cell
-    private Random random = new Random();
+    private final Random random = new Random();
 
     public Ghosts(int x, int y, Labyrinth lab) {
         this.x = x;
@@ -22,10 +22,10 @@ public class Ghosts {
         
         // Calculate proposed movement
         switch (direction) {
-            case 'L': newX -= speed; break;
-            case 'R': newX += speed; break;
-            case 'U': newY -= speed; break;
-            case 'D': newY += speed; break;
+            case 'L' -> newX -= speed;
+            case 'R' -> newX += speed;
+            case 'U' -> newY -= speed;
+            case 'D' -> newY += speed;
         }
         
         if (isValid(newX, newY)) {
@@ -72,13 +72,13 @@ public class Ghosts {
     }
     
     private char getOppositeDirection(char dir) {
-        switch (dir) {
-            case 'L': return 'R';
-            case 'R': return 'L';
-            case 'U': return 'D';
-            case 'D': return 'U';
-            default: return dir;
-        }
+        return switch (dir) {
+            case 'L' -> 'R';
+            case 'R' -> 'L';
+            case 'U' -> 'D';
+            case 'D' -> 'U';
+            default -> dir;
+        };
     }
     
     private void snapToGrid() {

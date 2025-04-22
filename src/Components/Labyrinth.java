@@ -1,24 +1,23 @@
 
-import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.awt.Color;
+import javax.swing.JPanel;
 
 
 
 public class Labyrinth extends JPanel {
 
-    Characters personnages= new Characters();
-    Cell cells= new Cell();
-    static final int ROWS = 20, COLS = 20;
+    public Characters personnages= new Characters();
+    public Cell cells = new Cell();
+    public static final int ROWS = 20, COLS = 20;
     private final int CELL_SIZE = Cell.size;
     public Cell[][] maze = new Cell[ROWS][COLS];  // 0 = mur, 1 = chemin
 
     private final List<Edge> edges = new ArrayList<>();
     private final UnionFind uf = new UnionFind(ROWS * COLS);
-
 
     public Labyrinth() {
         /*initialisation case du labyrinth */
@@ -76,7 +75,6 @@ public class Labyrinth extends JPanel {
                 }
             }
         }
-
 
         //vérifier qu'il n'y a pas de cycle , et les enlever s'il y en a 
 
@@ -183,7 +181,7 @@ public class Labyrinth extends JPanel {
 
     // Union-Find (Disjoint-Set) pour Kruskal
     private static class UnionFind {
-        private int[] parent;
+        private final int[] parent;
 
         public UnionFind(int size) {
             parent = new int[size];
@@ -207,9 +205,6 @@ public class Labyrinth extends JPanel {
             }
         }
     }
-
-
-
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -238,12 +233,7 @@ public class Labyrinth extends JPanel {
             g.drawImage(personnages.phJG, personnages.ghost1.x, personnages.ghost1.y, 45, 45, this);
         }
 
-       
-         
-      
         //g.drawImage(firstScreen, 150, 0, this); 
     
-
-
     }
 }
