@@ -5,42 +5,42 @@ import java.util.Random;
 public class Characters {
 
     /*phantom droite et gauche */
-    public Image phJG;
-    public Image phRD;
-    public Image phJD;
-    public Image phRG;
-    public Image phBD;
-    public Image phBG;
+    public Image ghost_yellow_left;
+    public Image ghost_red_right;
+    public Image ghost_yellow_right;
+    public Image ghost_red_left;
+    public Image ghost_blue_right;
+    public Image ghost_blue_left;
 
     /*Pacman droite gauche bas haut, bouche fermée et ouverte */
-    public Image pac_bouche_ouvD;
-    public Image pac_bouche_ouvG;
-    public Image pac_bouche_ouvH;
-    public Image pac_bouche_ouvB;
-    public Image pac_bouche_fermH;
-    public Image pac_bouche_fermB;
-    public Image pac_bouche_fermD;
-    public Image pac_bouche_fermG;
+    public Image pac_open_right;
+    public Image pac_open_left;
+    public Image pac_open_up;
+    public Image pac_open_down;
+    public Image pac_close_up;
+    public Image pac_close_down;
+    public Image pac_close_right;
+    public Image pac_close_left;
 
     public Ghosts ghost1;
 
     public Characters(){
      
-        this.phJG=Toolkit.getDefaultToolkit().getImage("Images/jgauche.png");
-        this.phJD=Toolkit.getDefaultToolkit().getImage("Images/pngimg.com - pacman_PNG19.png");
-        this.phRD=Toolkit.getDefaultToolkit().getImage("Images/images.png");
-        this.phRG=Toolkit.getDefaultToolkit().getImage("Images/rgauche.png");
-        this.phBD=Toolkit.getDefaultToolkit().getImage("Images/png-transparent-pac-man-blue-ghost-illustration-pac-man-world-3-pong-video-game-pacman-blue-game-smiley-thumbnail.png");
-        this.phBG=Toolkit.getDefaultToolkit().getImage("Images/bgauche.png");
+        this.ghost_yellow_left=Toolkit.getDefaultToolkit().getImage("Images/ghost_yellow_left.png");
+        this.ghost_yellow_right=Toolkit.getDefaultToolkit().getImage("Images/ghost_yellow_right.png");
+        this.ghost_red_right=Toolkit.getDefaultToolkit().getImage("Images/ghost_red_right.png");
+        this.ghost_red_left=Toolkit.getDefaultToolkit().getImage("Images/ghost_red_left.png");
+        this.ghost_blue_right=Toolkit.getDefaultToolkit().getImage("Images/ghost_blue_right.png");
+        this.ghost_blue_left=Toolkit.getDefaultToolkit().getImage("Images/ghost_blue_left.png");
 
-        this.pac_bouche_ouvD=Toolkit.getDefaultToolkit().getImage("Images/pacman-1 (Copie).png");
-        this.pac_bouche_ouvG=Toolkit.getDefaultToolkit().getImage("Images/pacmangauche (Copie).png");
-        this.pac_bouche_ouvB=Toolkit.getDefaultToolkit().getImage("Images/pacman-1.png");
-        this.pac_bouche_ouvH=Toolkit.getDefaultToolkit().getImage("Images/pacmangauche.png");
-        this.pac_bouche_fermH=Toolkit.getDefaultToolkit().getImage("Images/pacman-haut.png");
-        this.pac_bouche_fermB=Toolkit.getDefaultToolkit().getImage("Images/pacman-2.png");
-        this.pac_bouche_fermD=Toolkit.getDefaultToolkit().getImage("Images/pacman-2 (Copie).png");
-        this.pac_bouche_fermG=Toolkit.getDefaultToolkit().getImage("Images/pacman-gauche (Copie).png");
+        this.pac_open_right=Toolkit.getDefaultToolkit().getImage("Images/pac_open_right.png");
+        this.pac_open_left=Toolkit.getDefaultToolkit().getImage("Images/pac_open_left.png");
+        this.pac_open_down=Toolkit.getDefaultToolkit().getImage("Images/pac_open_down.png");
+        this.pac_open_up=Toolkit.getDefaultToolkit().getImage("Images/pac_open_up.png");
+        this.pac_close_up=Toolkit.getDefaultToolkit().getImage("Images/pac_close_up.png");
+        this.pac_close_down=Toolkit.getDefaultToolkit().getImage("Images/pac_close_down.png");
+        this.pac_close_right=Toolkit.getDefaultToolkit().getImage("Images/pac_close_right.png");
+        this.pac_close_left=Toolkit.getDefaultToolkit().getImage("Images/pac_close_left.png");
     
     }
 
