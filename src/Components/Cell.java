@@ -4,7 +4,6 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.ImageObserver;
 
-
 public class Cell {
 
     public Image firstScreen;
@@ -27,9 +26,8 @@ public class Cell {
 
     }
 
-    public void setCellVall(){
-        cellval=1;
+    public void setCellVal(CellType type){
+        cellval = type.getValue();
     }
-
   
 }

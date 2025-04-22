@@ -103,7 +103,7 @@ public class Ghosts {
                     return false;
                 }
                 
-                if (lab.maze[cellX][cellY].cellval != 1) {
+                if (lab.maze[cellX][cellY].cellval != CellType.WALL.getValue()) {
                     return false;
                 }
             }
