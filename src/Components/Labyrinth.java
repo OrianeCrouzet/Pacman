@@ -1,6 +1,5 @@
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,10 +7,14 @@ import javax.swing.JPanel;
 
 public class Labyrinth extends JPanel {
 
-    public Characters personnages= new Characters();
+    public Characters personnages = new Characters();
     public Cell cells = new Cell();
+
     public static final int ROWS = 20, COLS = 20;
-    private final int CELL_SIZE = Cell.size;
+    private static final int CELL_SIZE = CellType.SIZE.getValue();
+    private static final int DOT_SIZE = 6;
+    private static final int DOT_OFFSET = CELL_SIZE/2 - 3;
+
     public Cell[][] maze = new Cell[ROWS][COLS];
 
     private final List<Edge> edges = new ArrayList<>();
@@ -26,8 +29,10 @@ public class Labyrinth extends JPanel {
         }
         
         generateMaze();
+    }
+
+    public void initialiseGhostInMaze(){
         personnages.initGhostRandomPosition(this);
-        
     }
 
     /*Set cell state */
@@ -192,7 +197,6 @@ public class Labyrinth extends JPanel {
 
     }
 
-
     // Classe représentant une arête
     private static class Edge {
         int node1, node2;
@@ -234,30 +238,37 @@ public class Labyrinth extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        for (int x = 0; x< ROWS; x++) {
+        for (int x = 0; x < ROWS; x++) {
             for (int y = 0; y < COLS; y++) {
-
                 if( maze [x][y].cellval == CellType.WALL.getValue()){
                     g.setColor(Color.BLACK);
                     g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     g.setColor(Color.WHITE);
-                    g.fillOval(x *50+25, y * 50+25, 6,6);
-
+                    g.fillOval(
+                        x * CELL_SIZE + DOT_OFFSET,
+                        y * CELL_SIZE + DOT_OFFSET,
+                        DOT_SIZE,
+                        DOT_SIZE
+                    );
                 }
-              else{
-                g.setColor(Color.BLUE);
-                g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-
+                else{
+                    g.setColor(Color.BLUE);
+                    g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 }
             }
         }
 
-         // Dessine le fantôme s'il existe
+        // Dessin des personnages
         if (personnages.ghost1 != null) {
             g.drawImage(personnages.phJG, personnages.ghost1.x, personnages.ghost1.y, 45, 45, this);
         }
 
-        //g.drawImage(firstScreen, 150, 0, this); 
-    
+        if(personnages.ghost1 == null) {
+            System.err.println("Image perdue !");
+        }
+    }
+
+    public Characters getPersonnages() {
+        return personnages;
     }
 }

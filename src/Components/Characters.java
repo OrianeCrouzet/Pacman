@@ -1,12 +1,11 @@
 
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.util.Random;
 
 public class Characters {
 
     /*phantom droite et gauche */
-    public Image  phJG;
+    public Image phJG;
     public Image phRD;
     public Image phJD;
     public Image phRG;
@@ -58,6 +57,10 @@ public class Characters {
                 return;
             }
         }
+    }
+
+    public Ghosts getGhost1() {
+        return ghost1;
     }
     
 }
