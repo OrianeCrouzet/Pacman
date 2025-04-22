@@ -39,7 +39,14 @@ public class Ghosts {
     }
 
     private boolean isValid(int xPixel, int yPixel) {
-        // Vérifie le centre et les bords du fantôme
+        // 1. Vérification des bords de l'écran
+        if (xPixel < 0 || yPixel < 0 ||
+            xPixel + GHOST_SIZE > lab.getWidth() || 
+            yPixel + GHOST_SIZE > lab.getHeight()) {
+            return false; // Considère les bords comme des murs
+        }
+        
+        // 2. Vérification des murs du labyrinthe
         int[][] checkPoints = {
             {xPixel + GHOST_SIZE/2, yPixel + GHOST_SIZE/2}, // Centre
             {xPixel, yPixel}, // Coin supérieur gauche
@@ -52,11 +59,12 @@ public class Ghosts {
             int cellX = point[0] / Cell.size;
             int cellY = point[1] / Cell.size;
             
+            // Vérifie si on est dans les limites du labyrinthe
             if (cellX < 0 || cellY < 0 || cellX >= Labyrinth.COLS || cellY >= Labyrinth.ROWS) {
                 return false;
             }
             
-            if (lab.maze[cellX][cellY].cellval != CellType.POINT.getValue()) {
+            if (lab.maze[cellX][cellY].cellval == CellType.WALL.getValue()) {
                 return false;
             }
         }

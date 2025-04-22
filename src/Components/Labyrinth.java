@@ -275,4 +275,14 @@ public class Labyrinth extends JPanel {
     public Characters getPersonnages() {
         return personnages;
     }
+
+    @Override
+    public int getWidth() {
+        return COLS * CELL_SIZE;
+    }
+    
+    @Override
+    public int getHeight() {
+        return ROWS * CELL_SIZE;
+    }
 }
