@@ -14,6 +14,10 @@ public class MainContainer {
         initializeGame();
     }
 
+    
+    /** 
+     * @return JFrame
+     */
     private JFrame createMainWindow() {
         JFrame window = new JFrame("PACMAN");
         int width = Labyrinth.COLS * Cell.size;
@@ -27,17 +31,26 @@ public class MainContainer {
         return window;
     }
 
+    /**
+     * 
+     */
     private void initializeGame() {
         labyrinth.initialiseGhostInMaze();  // Initialisation après la création du labyrinthe
         setupGameLoop();
         frame.setVisible(true);  // On rend la fenêtre visible seulement quand tout est prêt
     }
 
+    /**
+     * 
+     */
     private void setupGameLoop() {
         gameTimer = new Timer(30, e -> updateGame());
         gameTimer.start();
     }
 
+    /**
+     * 
+     */
     private void updateGame() {
         labyrinth.getPersonnages().getGhost1().move();
         labyrinth.repaint();

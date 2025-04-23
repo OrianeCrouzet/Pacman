@@ -18,10 +18,21 @@ public class Cell {
         this.cellstate = true;
     }
 
+    
+    /** 
+     * @param g
+     * @param x
+     * @param y
+     * @param im
+     */
     public void drawI(Graphics g, int x, int y, ImageObserver im){
         g.drawImage(fraise, x*size+25,y*size+25,8,8,im);
     }
 
+    /**
+     * 
+     * @param type
+     */
     public void setCellVal(CellType type){
         cellval = type.getValue();
     }

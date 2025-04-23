@@ -48,6 +48,10 @@ public class Characters {
     
     }
 
+    
+    /** 
+     * @param lab
+     */
     public void initGhostRandomPosition(Labyrinth lab) {
         Random rand = new Random();
         int x, y;
@@ -73,10 +77,17 @@ public class Characters {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public Ghosts getGhost1() {
         return ghost1;
     }
 
+    /**
+     * 
+     */
     public void loadGhostImage() {
         try {
             // Méthode garantie pour charger depuis les ressources
@@ -104,6 +115,10 @@ public class Characters {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     private BufferedImage createFallbackImage() {
         BufferedImage img = new BufferedImage(45, 45, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();

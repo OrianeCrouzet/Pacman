@@ -18,6 +18,9 @@ public class Ghosts {
         this.direction = getValidDirection(); // Direction valide dès le départ
     }
 
+    /**
+     * 
+     */
     public void move() {
         // Essayer la direction actuelle d'abord
         if (!tryMove(direction)) {
@@ -26,6 +29,10 @@ public class Ghosts {
         }
     }
 
+    /** 
+     * @param dir
+     * @return boolean
+     */
     private boolean tryMove(char dir) {
         int newX = getNextX(dir);
         int newY = getNextY(dir);
@@ -38,6 +45,12 @@ public class Ghosts {
         return false;
     }
 
+    /**
+     * 
+     * @param xPixel
+     * @param yPixel
+     * @return
+     */
     private boolean isValid(int xPixel, int yPixel) {
         // 1. Vérification des bords de l'écran
         if (xPixel < 0 || yPixel < 0 ||
@@ -71,6 +84,10 @@ public class Ghosts {
         return true;
     }
 
+    /**
+     * 
+     * @return
+     */
     private char getValidDirection() {
         char[] directions = {'L', 'R', 'U', 'D'};
         shuffleArray(directions);
@@ -83,14 +100,28 @@ public class Ghosts {
         return 'U'; // Fallback (normalement jamais atteint)
     }
 
+    /**
+     * 
+     * @param dir
+     * @return
+     */
     private int getNextX(char dir) {
         return x + (dir == 'L' ? -SPEED : dir == 'R' ? SPEED : 0);
     }
 
+    /**
+     * 
+     * @param dir
+     * @return
+     */
     private int getNextY(char dir) {
         return y + (dir == 'U' ? -SPEED : dir == 'D' ? SPEED : 0);
     }
 
+    /**
+     * 
+     * @param array
+     */
     private void shuffleArray(char[] array) {
         for (int i = array.length - 1; i > 0; i--) {
             int j = random.nextInt(i + 1);

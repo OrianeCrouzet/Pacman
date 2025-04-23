@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 public class Labyrinth extends JPanel {
 
     public Characters personnages = new Characters();
-    public Cell cells = new Cell();
 
     public static final int ROWS = 20, COLS = 20;
     private static final int CELL_SIZE = CellType.SIZE.getValue();
@@ -31,19 +30,38 @@ public class Labyrinth extends JPanel {
         generateMaze();
     }
 
+    /**
+     * 
+     */
     public void initialiseGhostInMaze(){
         personnages.initGhostRandomPosition(this);
     }
 
     /*Set cell state */
+    /**
+     * 
+     */
     public void setCell(){
         
     }
 
-    // Algorithme de Kruskal pour générer le labyrinthe
+    /**
+     * Algorithme pour générer un labyrinthe avec Kruskal
+     */
     private void generateMaze() {
-        // Créer les arêtes (murs) pour chaque cellule voisine
-        for (int x= 0; x < ROWS; x++) {
+        generateAllPossibleWalls();
+        shuffleEdges();
+        createMazePaths();
+        fixCornerCases();
+        fixBorderCases();
+        fixCenterCases();
+    }
+    
+    /**
+     * Fonction qui génère toutes les parois possibles entre cellules voisines
+     */
+    private void generateAllPossibleWalls() {
+        for (int x = 0; x < ROWS; x++) {
             for (int y = 0; y < COLS; y++) {
                 if (x < COLS - 1) {
                     edges.add(new Edge(y * COLS + x, y * COLS + (x + 1))); // Mur horizontal
@@ -53,151 +71,127 @@ public class Labyrinth extends JPanel {
                 }
             }
         }
-
-        // Trier les arêtes (on pourrait les mélanger pour la randomisation)
+    }
+    
+    /**
+     * Fonction qui mélange les parois pour randomisation
+     */
+    private void shuffleEdges() {
         Collections.shuffle(edges);
-
-        // Kruskal : ajouter les arêtes pour créer des chemins
+    }
+    
+    /**
+     * Fonction qui crée les chemins principaux avec Kruskal
+     */
+    private void createMazePaths() {
         for (Edge edge : edges) {
             int root1 = uf.find(edge.node1);
             int root2 = uf.find(edge.node2);
-
-            // Si les cellules ne sont pas déjà dans le même ensemble, on les relie
+    
             if (root1 != root2) {
                 uf.union(root1, root2);
-                int x1 = edge.node1 % COLS;
-                int y1 = edge.node1 / COLS;
-                int x2 = edge.node2 % COLS;
-                int y2 = edge.node2 / COLS;
-
-                // Ouvrir le passage en supprimant le mur entre les cellules
-                if (x1 == x2) {  // Mur vertical
-                    maze[Math.min(y1, y2)][x1].setCellVal(CellType.POINT);
-                } else {  // Mur horizontal
-                    maze[y1][Math.min(x1, x2)].setCellVal(CellType.POINT);
-                }
+                connectCells(edge);
             }
         }
-
-        //vérifier qu'il n'y a pas de cycle , et les enlever s'il y en a 
-
-        //si c'est un coin
-
-        //haut-gauche
-        if((maze[0][0].cellval == CellType.POINT.getValue())
-        &&(maze[1][0].cellval == CellType.WALL.getValue())
-        &&(maze[0][1].cellval == CellType.WALL.getValue()))
-        {
-            maze[0][1].setCellVal(CellType.POINT);
-        }
-
-        //haut droite
-        if((maze[COLS-1][0].cellval == CellType.POINT.getValue())
-        &&(maze[COLS-2][0].cellval == CellType.WALL.getValue())
-        &&(maze[COLS-1][1].cellval == CellType.WALL.getValue()))
-        {
-            maze[COLS-1][1].setCellVal(CellType.POINT);
-        }
-
-        //bas droite
-        if((maze[COLS-1][ROWS-1].cellval == CellType.POINT.getValue())
-        &&(maze[COLS-2][ROWS-1].cellval == CellType.WALL.getValue())
-        &&(maze[COLS-1][ROWS-2].cellval == CellType.WALL.getValue()))
-        {
-            maze[COLS-1][ROWS-2].setCellVal(CellType.POINT);
-        }
-
-        //bas gauche
-        if((maze[0][ROWS-1].cellval == CellType.POINT.getValue())
-        &&(maze[0][ROWS-2].cellval == CellType.WALL.getValue())
-        &&(maze[1][ROWS-1].cellval == CellType.WALL.getValue()))
-        {
-            maze[1][ROWS-1].setCellVal(CellType.POINT);
-        }
-
-       //si c'est une case au niveau de la bordure
-        for (int x = 1; x < COLS-1; x++) {
-
-            if(maze[x][1].cellval == CellType.POINT.getValue()){
-                
-                //bordure du haut
-                 if((maze[x-1][0].cellval == CellType.WALL.getValue())
-                 &&(maze[x+1][0].cellval == CellType.WALL.getValue())
-                 &&(maze[x][1].cellval == CellType.WALL.getValue())) 
-                {
-                    //on choisi un mur q'on enleve
-                    maze[x-1][0].setCellVal(CellType.POINT);
-                }
-                
-            }
-
-             //bordure du bas
-            if(maze[x][ROWS-1].cellval == CellType.POINT.getValue()){
-               
-                if((maze[x-1][ROWS-1].cellval== CellType.WALL.getValue())
-                &&(maze[x+1][ROWS-1].cellval == CellType.WALL.getValue())
-                &&(maze[x][ROWS-2].cellval == CellType.WALL.getValue()))
-                {
-                    //on choisi un mur q'on enleve
-                    maze[x][ROWS-2].setCellVal(CellType.POINT);
-                }
-            }
-        }
-
-        //sur les cotés
-        for (int y= 1; y< COLS-1; y++) {
-
-            if(maze[0][y].cellval == CellType.POINT.getValue()){
-                
-                //gauche
-                 if((maze[0][y-1].cellval == CellType.WALL.getValue())
-                 &&(maze[0][y+1].cellval == CellType.WALL.getValue())
-                 &&(maze[1][y].cellval == CellType.WALL.getValue()))
-                 {
-                    //on choisi un mur q'on enleve
-                    maze[1][y].setCellVal(CellType.POINT);
-                }
-                
-            }
-
-            if(maze[COLS-1][y].cellval == CellType.POINT.getValue()){
-                
-                //droite
-                 if((maze[COLS-1][y-1].cellval == CellType.WALL.getValue())
-                 &&(maze[COLS-1][y+1].cellval == CellType.WALL.getValue())
-                 &&(maze[COLS-2][y].cellval == CellType.WALL.getValue()))
-                 {
-                    //on choisi un mur q'on enleve
-                    maze[COLS-2][y].setCellVal(CellType.POINT);
-                }
-                
-            }
-
-        }
-
-        //les cases du milieu
-        for (int x = 1; x < COLS-1; x++) {
-
-            for (int y= 1; y< COLS-2; y++) {
-
-                if(maze[x][y].cellval == CellType.POINT.getValue()){
-
-                    if((maze[x][y-1].cellval == CellType.WALL.getValue())
-                    &&(maze[x][y+1].cellval == CellType.WALL.getValue())
-                    &&(maze[x-1][y].cellval == CellType.WALL.getValue())
-                    &&(maze[x+1][y].cellval == CellType.WALL.getValue()))
-                    {
-                        maze[x][y-1].setCellVal(CellType.POINT);
-                    }
-
-                }
-            }
-        }
-
-
     }
+    
+    /** 
+     * Fonction qui connecte deux cellules adjacentes
+     * @param edge : l'arête commune aux deux cellules adjacentes
+     */
+    private void connectCells(Edge edge) {
+        int x1 = edge.node1 % COLS;
+        int y1 = edge.node1 / COLS;
+        int x2 = edge.node2 % COLS;
+        int y2 = edge.node2 / COLS;
+    
+        if (x1 == x2) {  // Mur vertical
+            maze[Math.min(y1, y2)][x1].setCellVal(CellType.POINT);
+        } else {  // Mur horizontal
+            maze[y1][Math.min(x1, x2)].setCellVal(CellType.POINT);
+        }
+    }
+    
+    /**
+     * Fonction qui corrige les cas particuliers des coins
+     */
+    private void fixCornerCases() {
+        // Haut-gauche
+        fixCorner(0, 0, 0, 1, 1, 0);
+        
+        // Haut-droite
+        fixCorner(COLS-1, 0, COLS-1, 1, COLS-2, 0);
+        
+        // Bas-droite
+        fixCorner(COLS-1, ROWS-1, COLS-1, ROWS-2, COLS-2, ROWS-1);
+        
+        // Bas-gauche
+        fixCorner(0, ROWS-1, 0, ROWS-2, 1, ROWS-1);
+    }
+    
+    /**
+     * Fonction qui corrige le coin particulier en question
+     */
+    private void fixCorner(int cornerX, int cornerY, int adjX1, int adjY1, int adjX2, int adjY2) {
+        if (maze[cornerY][cornerX].cellval == CellType.POINT.getValue() &&
+            maze[adjY1][adjX1].cellval == CellType.WALL.getValue() &&
+            maze[adjY2][adjX2].cellval == CellType.WALL.getValue()) {
+            maze[adjY1][adjX1].setCellVal(CellType.POINT);
+        }
+    }
+    
+    /**
+     * Fonction qui corrige les cas des bords
+     */
+    private void fixBorderCases() {
+        // Bordure haut/bas
+        for (int x = 1; x < COLS-1; x++) {
+            fixBorderCell(x, 0, x, 1);       // Haut
+            fixBorderCell(x, ROWS-1, x, ROWS-2); // Bas
+        }
+        
+        // Bordure gauche/droite
+        for (int y = 1; y < ROWS-1; y++) {
+            fixBorderCell(0, y, 1, y);       // Gauche
+            fixBorderCell(COLS-1, y, COLS-2, y); // Droite
+        }
+    }
+    
+    /**
+     * Fonction qui corrige les bords des cellules
+     * @param x
+     * @param y
+     * @param adjX
+     * @param adjY
+     */
+    private void fixBorderCell(int x, int y, int adjX, int adjY) {
+        if (maze[y][x].cellval == CellType.POINT.getValue() &&
+            maze[adjY][adjX].cellval == CellType.WALL.getValue()) {
+            maze[adjY][adjX].setCellVal(CellType.POINT);
+        }
+    }
+    
+    /**
+     * Fonction qui corrige les cas du centre
+     */
+    private void fixCenterCases() {
+        for (int x = 1; x < COLS-1; x++) {
+            for (int y = 1; y < ROWS-1; y++) {
+                if (maze[y][x].cellval == CellType.POINT.getValue() &&
+                    maze[y-1][x].cellval == CellType.WALL.getValue() &&
+                    maze[y+1][x].cellval == CellType.WALL.getValue() &&
+                    maze[y][x-1].cellval == CellType.WALL.getValue() &&
+                    maze[y][x+1].cellval == CellType.WALL.getValue()) {
+                    maze[y-1][x].setCellVal(CellType.POINT);
+                }
+            }
+        }
+    } 
 
     // Classe représentant une arête
+    /**
+     * 
+     */
     private static class Edge {
         int node1, node2;
 
@@ -208,6 +202,9 @@ public class Labyrinth extends JPanel {
     }
 
     // Union-Find (Disjoint-Set) pour Kruskal
+    /**
+     * 
+     */
     private static class UnionFind {
         private final int[] parent;
 
@@ -235,9 +232,13 @@ public class Labyrinth extends JPanel {
     }
 
     @Override
+    /**
+     * 
+     */
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        // Dessin du labyrinthe
         for (int x = 0; x < ROWS; x++) {
             for (int y = 0; y < COLS; y++) {
                 if( maze [x][y].cellval == CellType.POINT.getValue()){
@@ -272,15 +273,25 @@ public class Labyrinth extends JPanel {
         }
     }
 
+    /**
+     * 
+     * @return
+     */
     public Characters getPersonnages() {
         return personnages;
     }
 
+    /**
+     * 
+     */
     @Override
     public int getWidth() {
         return COLS * CELL_SIZE;
     }
     
+    /**
+     * 
+     */
     @Override
     public int getHeight() {
         return ROWS * CELL_SIZE;
