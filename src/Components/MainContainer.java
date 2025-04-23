@@ -52,7 +52,9 @@ public class MainContainer {
      * 
      */
     private void updateGame() {
-        labyrinth.getPersonnages().getGhost1().move();
+        for (Ghosts ghost : labyrinth.personnages.getGhosts()) {
+            ghost.move();
+        }
         labyrinth.repaint();
     }
 

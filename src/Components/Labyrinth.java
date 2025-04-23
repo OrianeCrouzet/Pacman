@@ -34,7 +34,7 @@ public class Labyrinth extends JPanel {
      * 
      */
     public void initialiseGhostInMaze(){
-        personnages.initGhostRandomPosition(this);
+        personnages.initGhostsRandomPositions(this);
     }
 
     /*Set cell state */
@@ -259,18 +259,26 @@ public class Labyrinth extends JPanel {
             }
         }
 
-        // Dessin des personnages
-        if (personnages.ghost1 != null && personnages.ghost_yellow_left != null) {
+       // Dessin des fantômes
+       for (Ghosts ghost : personnages.getGhosts()) {
+        if (ghost != null) {
+            int drawX = ghost.x + (Cell.size - Ghosts.GHOST_WIDTH)/2;
+            int drawY = ghost.y + (Cell.size - Ghosts.GHOST_HEIGHT)/2;
             
-            // Position centrée dans la cellule
-            int drawX = personnages.ghost1.x + (Cell.size - Ghosts.GHOST_WIDTH)/2;
-            int drawY = personnages.ghost1.y + (Cell.size - Ghosts.GHOST_HEIGHT)/2;
+            Image ghostImage = personnages.getGhostImage(
+                ghost.getColor(),
+                ghost.getDirection()
+            );
             
-            g.drawImage(personnages.ghost_yellow_left, 
-                       drawX, drawY, 
-                       Ghosts.GHOST_WIDTH, Ghosts.GHOST_HEIGHT, 
-                       this);
+            if (ghostImage != null) {
+                g.drawImage(ghostImage, 
+                           drawX, drawY, 
+                           Ghosts.GHOST_WIDTH, Ghosts.GHOST_HEIGHT, 
+                           null);
+            }
         }
+    }
+        
     }
 
     /**

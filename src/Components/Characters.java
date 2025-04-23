@@ -3,97 +3,55 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Characters {
-
-    /*phantom droite et gauche */
-    public Image ghost_yellow_left;
-    public Image ghost_red_right;
-    public Image ghost_yellow_right;
-    public Image ghost_red_left;
-    public Image ghost_blue_right;
-    public Image ghost_blue_left;
-
-    /*Pacman droite gauche bas haut, bouche fermée et ouverte */
-    public Image pac_open_right;
-    public Image pac_open_left;
-    public Image pac_open_up;
-    public Image pac_open_down;
-    public Image pac_close_up;
-    public Image pac_close_down;
-    public Image pac_close_right;
-    public Image pac_close_left;
-
-    public Ghosts ghost1;
-
-    public Characters(){
-     
-        this.ghost_yellow_left=Toolkit.getDefaultToolkit().getImage("Images/ghost_yellow_left.png");
-        this.ghost_yellow_right=Toolkit.getDefaultToolkit().getImage("Images/ghost_yellow_right.png");
-        this.ghost_red_right=Toolkit.getDefaultToolkit().getImage("Images/ghost_red_right.png");
-        this.ghost_red_left=Toolkit.getDefaultToolkit().getImage("Images/ghost_red_left.png");
-        this.ghost_blue_right=Toolkit.getDefaultToolkit().getImage("Images/ghost_blue_right.png");
-        this.ghost_blue_left=Toolkit.getDefaultToolkit().getImage("Images/ghost_blue_left.png");
-
-        this.pac_open_right=Toolkit.getDefaultToolkit().getImage("Images/pac_open_right.png");
-        this.pac_open_left=Toolkit.getDefaultToolkit().getImage("Images/pac_open_left.png");
-        this.pac_open_down=Toolkit.getDefaultToolkit().getImage("Images/pac_open_down.png");
-        this.pac_open_up=Toolkit.getDefaultToolkit().getImage("Images/pac_open_up.png");
-        this.pac_close_up=Toolkit.getDefaultToolkit().getImage("Images/pac_close_up.png");
-        this.pac_close_down=Toolkit.getDefaultToolkit().getImage("Images/pac_close_down.png");
-        this.pac_close_right=Toolkit.getDefaultToolkit().getImage("Images/pac_close_right.png");
-        this.pac_close_left=Toolkit.getDefaultToolkit().getImage("Images/pac_close_left.png");
-    
+    // Enum pour les couleurs de fantômes
+    public enum GhostColor {
+        RED, BLUE, YELLOW
     }
 
-    
-    /** 
-     * @param lab
-     */
-    public void initGhostRandomPosition(Labyrinth lab) {
-        Random rand = new Random();
-        int x, y;
-    
-        while (true) {
-            x = rand.nextInt(19);
-            y = rand.nextInt(19);
-    
-            if (lab.maze[x][y].cellval == CellType.POINT.getValue()) {
-                // 1. Initialise la position du fantôme
-                ghost1 = new Ghosts(x * Cell.size, y * Cell.size, lab);
-                
-                // 2. Charge l'image AVANT de quitter la méthode
-                loadGhostImage();
-                
-                // Debug
-                System.out.printf("Fantôme placé en [%d,%d] | Image %s\n",
-                    ghost1.x, ghost1.y,
-                    (ghost_yellow_left != null ? "chargée (" + ghost_yellow_left.getWidth(null) + "x" + ghost_yellow_left.getHeight(null) + ")" : "manquante"));
-                
-                return;
-            }
+    // Stockage des images de fantômes (Color -> Direction -> Image)
+    private Map<GhostColor, Map<Direction, Image>> ghostImages;
+
+    // Images de Pacman (Direction -> [ouvert, fermé])
+    private Map<Direction, Image[]> pacmanImages;
+
+    //Liste des fantômes
+    private final List<Ghosts> ghosts = new ArrayList<>();
+
+    public Characters() {
+        loadGhostImages();
+        //loadPacmanImages();
+    }
+
+    private void loadGhostImages() {
+        ghostImages = new EnumMap<>(GhostColor.class);
+        
+        for (GhostColor color : GhostColor.values()) {
+            Map<Direction, Image> dirImages = new EnumMap<>(Direction.class);
+            String colorName = color.name().toLowerCase();
+            
+            // Chargement des images gauche/droite
+            dirImages.put(Direction.LEFT, loadGhostImage("Images/ghost_" + colorName + "_left.png"));
+            dirImages.put(Direction.RIGHT, loadGhostImage("Images/ghost_" + colorName + "_right.png"));
+            
+            ghostImages.put(color, dirImages);
         }
     }
 
     /**
-     * 
-     * @return
+     * Méthode robuste de chargement d'image avec gestion des erreurs
      */
-    public Ghosts getGhost1() {
-        return ghost1;
-    }
-
-    /**
-     * 
-     */
-    public void loadGhostImage() {
+    private Image loadGhostImage(String src) {
         try {
-            // Méthode garantie pour charger depuis les ressources
-            InputStream imgStream = getClass().getResourceAsStream("Images/ghost_yellow_left.png");
+            InputStream imgStream = getClass().getResourceAsStream(src);
             if (imgStream != null) {
-                // Conversion en format ARGB pour la transparence
                 BufferedImage original = ImageIO.read(imgStream);
                 BufferedImage compatible = new BufferedImage(
                     original.getWidth(),
@@ -104,34 +62,125 @@ public class Characters {
                 g2d.drawImage(original, 0, 0, null);
                 g2d.dispose();
                 
-                this.ghost_yellow_left = compatible;
-            } else {
-                throw new IOException("Fichier introuvable dans les ressources");
+                return compatible;
             }
+            throw new IOException("Fichier introuvable: " + src);
         } catch (IOException e) {
-            System.err.println("Erreur de chargement : " + e.getMessage());
-            // Fallback visuel
-            this.ghost_yellow_left = createFallbackImage();
+            System.err.println("Erreur de chargement: " + e.getMessage());
+            return createFallbackGhostImage();
+        }
+    }
+
+    private BufferedImage createFallbackGhostImage() {
+        BufferedImage img = new BufferedImage(30, 30, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        
+        // Dessin d'un fantôme de base (cercle avec yeux)
+        g.setColor(Color.RED);
+        g.fillRoundRect(0, 0, 30, 30, 10, 10);
+        g.setColor(Color.WHITE);
+        g.fillOval(5, 8, 8, 8);
+        g.fillOval(17, 8, 8, 8);
+        
+        g.dispose();
+        return img;
+    }
+
+    private void loadPacmanImages() {
+        pacmanImages = new EnumMap<>(Direction.class);
+        
+        // Directions principales (on pourrait ajouter UP/DOWN si besoin)
+        Direction[] directions = {Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN};
+        
+        for (Direction dir : directions) {
+            String dirName = dir.name().toLowerCase();
+            pacmanImages.put(dir, new Image[] {
+                Toolkit.getDefaultToolkit().getImage("Images/pac_open_" + dirName + ".png"),
+                Toolkit.getDefaultToolkit().getImage("Images/pac_close_" + dirName + ".png")
+            });
+        }
+    }
+
+    // Méthode utilitaire pour obtenir une image de fantôme
+    public Image getGhostImage(GhostColor color, Direction direction) {
+        return ghostImages.get(color).get(direction);
+    }
+
+    // Méthode utilitaire pour obtenir une image de Pacman
+    public Image getPacmanImage(Direction direction, boolean mouthOpen) {
+        return pacmanImages.get(direction)[mouthOpen ? 0 : 1];
+    }
+
+    // Initialisation des fantômes avec des couleurs variées
+    public void initGhostsRandomPositions(Labyrinth lab) {
+        Random rand = new Random();
+        GhostColor[] colors = GhostColor.values();
+        
+        for (GhostColor color : colors) {
+            Ghosts ghost = createGhostAtRandomPosition(rand, lab, color);
+            ghosts.add(ghost);
+        }
+    }
+
+    private Ghosts createGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
+        while (true) {
+            int x = rand.nextInt(Labyrinth.COLS);
+            int y = rand.nextInt(Labyrinth.ROWS);
+            
+            if (isValidGhostPosition(lab, x, y)) {
+                return new Ghosts(
+                    x * Cell.size + Cell.size/2,
+                    y * Cell.size + Cell.size/2,
+                    lab,
+                    getGhostImage(color, Direction.LEFT),
+                    color 
+                );
+            }
         }
     }
 
     /**
-     * 
-     * @return
+     * Vérifie si la position est valide pour un fantôme
+     * @param lab : Le labyrinthe de différence
+     * @param x : position x
+     * @param y : position y
+     * @return : true si la position du fantôme est valide
+     *         : false sinon
      */
-    private BufferedImage createFallbackImage() {
-        BufferedImage img = new BufferedImage(45, 45, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = img.createGraphics();
+    private boolean isValidGhostPosition(Labyrinth lab, int x, int y) {
+        // 1. La cellule doit être un chemin
+        if (lab.maze[x][y].cellval != CellType.POINT.getValue()) {
+            return false;
+        }
         
-        // Dessin d'un fantôme de test (cercle rouge avec yeux)
-        g.setColor(Color.RED);
-        g.fillOval(5, 5, 35, 35);
-        g.setColor(Color.WHITE);
-        g.fillOval(15, 15, 8, 8);
-        g.fillOval(25, 15, 8, 8);
+        // 2. Vérifie qu'aucun fantôme n'est déjà trop proche
+        for (Ghosts existing : ghosts) {
+            int ghostCellX = existing.x / Cell.size;
+            int ghostCellY = existing.y / Cell.size;
+            
+            if (Math.abs(ghostCellX - x) < 2 && Math.abs(ghostCellY - y) < 2) {
+                return false; // Évite le chevauchement
+            }
+        }
         
-        g.dispose();
-        return img;
+        return true;
+    }
+
+    /**
+     * Fonction qui permet de récupérer le fantôme numéro i
+     * @param i : l'indice du fantôme qu'on veut retrouver
+     * @return : le fantôme à l'indice i
+     */
+    public Ghosts getGhost(int i) {
+        return ghosts.get(i);
+    }
+
+    /**
+     * Fonction qui retourne la liste de tous les fantômes
+     * @return : la liste de tous les fantômes
+     */
+    public List<Ghosts> getGhosts() {
+        return ghosts;
     }
     
 }
