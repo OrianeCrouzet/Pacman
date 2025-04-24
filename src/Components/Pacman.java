@@ -12,6 +12,9 @@ public class Pacman  {
     public static final int PACMAN_WIDTH = Cell.size * 3/4;  // 75% de la cellule
     public static final int PACMAN_HEIGHT = Cell.size * 3/4;
 
+    private static final int POINT_VALUE = 10;
+    private int score = 0;
+
     private int lives;
     private final Labyrinth lab;
     private Direction direction;
@@ -83,6 +86,7 @@ public class Pacman  {
         if (canMoveTo(newX, newY)) {
             x = newX;
             y = newY;
+            checkPointCollision();
         } 
         
         // Garantit qu'on reste dans les limites de l'écran
@@ -122,6 +126,54 @@ public class Pacman  {
             }
         }
         return true;
+    }
+
+    public void checkPointCollision() {
+        // On prend le centre de Pacman pour la détection
+        int centerX = x + PACMAN_WIDTH / 2;
+        int centerY = y + PACMAN_HEIGHT / 2;
+        
+        // Conversion en coordonnées de grille
+        int gridX = centerX / Cell.size;
+        int gridY = centerY / Cell.size;
+        
+        // Vérification des limites
+        if (gridX >= 0 && gridX < Labyrinth.COLS && 
+            gridY >= 0 && gridY < Labyrinth.ROWS) {
+            
+            Cell cell = lab.maze[gridX][gridY];
+            
+            if (cell.cellval == CellType.POINT.getValue()) {
+                cell.cellval = CellType.EMPTY.getValue();
+                score += POINT_VALUE;
+                
+                // Debug
+                System.out.println("Point mangé en [" + gridX + "," + gridY + "]");
+                System.out.println("Position Pacman: " + x + "," + y);
+                
+                // Rafraîchissement précis
+                lab.repaint(gridX * Cell.size, 
+                                 gridY * Cell.size, 
+                                 Cell.size, 
+                                 Cell.size);
+            }
+        }
+    }
+    
+    private void checkWinCondition() {
+        boolean allPointsEaten = true;
+        for (Cell[] row : lab.maze) {
+            for (Cell cell : row) {
+                if (cell.cellval == CellType.POINT.getValue()) {
+                    allPointsEaten = false;
+                    break;
+                }
+            }
+        }
+        if (allPointsEaten) {
+            System.out.println("Tous les points ont été mangés!");
+            // Ici vous pourriez déclencher un écran de victoire
+        }
     }
 
     public boolean checkGhostCollisions(List<Ghosts> ghosts) {

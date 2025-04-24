@@ -252,6 +252,10 @@ public class Labyrinth extends JPanel {
                         DOT_SIZE
                     );
                 }
+                else if(maze [x][y].cellval == CellType.EMPTY.getValue()){
+                    g.setColor(Color.BLACK);
+                    g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
                 else{
                     g.setColor(Color.BLUE);
                     g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
