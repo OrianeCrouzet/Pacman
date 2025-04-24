@@ -265,7 +265,7 @@ public class Characters {
                     getPacmanImage(Direction.RIGHT, true),
                     this
                 );
-                System.out.println("Pacman initialisé en [" + x + "," + y + "]");
+                System.out.println("Pacman initialisé en (" + x + "," + y + ")");
                 return;
             }
         }

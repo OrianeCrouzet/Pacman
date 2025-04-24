@@ -34,8 +34,8 @@ public class Labyrinth extends JPanel {
      * 
      */
     public void initialiseCharactersInMaze(){
-        personnages.initGhostsRandomPositions(this);
         personnages.initPacmanPosition(this);
+        personnages.initGhostsRandomPositions(this);
     }
 
     /*Set cell state */

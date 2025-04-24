@@ -1,8 +1,9 @@
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Random;
 
-public class Pacman {
+public class Pacman  {
 
     public int x, y;
 
@@ -31,6 +32,7 @@ public class Pacman {
         this.mouthOpen = true;
         this.lives = 3;
         this.characters = characters;
+
     }
 
     public void update() {
@@ -42,30 +44,52 @@ public class Pacman {
     }
 
     public void handleInput(int keyCode) {
-        switch (keyCode) {
-            case KeyEvent.VK_Z -> requestMove(Direction.UP);
-            case KeyEvent.VK_S -> requestMove(Direction.DOWN);
-            case KeyEvent.VK_Q -> requestMove(Direction.LEFT);
-            case KeyEvent.VK_D -> requestMove(Direction.RIGHT);
-        }
-    }
+        Direction newDir = switch (keyCode) {
+            case KeyEvent.VK_Z -> Direction.UP; 
+            case KeyEvent.VK_S -> Direction.DOWN;
+            case KeyEvent.VK_Q -> Direction.LEFT;
+            case KeyEvent.VK_D -> Direction.RIGHT;
+            default -> this.direction;
+        };
 
-    private void requestMove(Direction newDir) {
-        // Pré-mouvement pour vérification
-        int newX = x, newY = y;
+        System.out.println("Key detected");
+        
+        // Mise à jour de la direction si elle a changé
+        if (newDir != this.direction) {
+            tryChangeDirection(newDir);
+        }
+    }    
+
+    private void tryChangeDirection(Direction newDir) {
+        // Teste le mouvement dans la nouvelle direction
+        int testX = x, testY = y;
+        
         switch (newDir) {
-            case UP -> newY -= SPEED;
-            case DOWN -> newY += SPEED;
-            case LEFT -> newX -= SPEED;
-            case RIGHT -> newX += SPEED;
+            case UP -> testY -= SPEED;
+            case DOWN -> testY += SPEED;
+            case LEFT -> testX -= SPEED;
+            case RIGHT -> testX += SPEED;
         }
 
-        if (canMoveTo(newX, newY)) {
-            direction = newDir;
-            x = newX;
-            y = newY;
+        if (canMoveTo(testX, testY)) {
+            this.direction = newDir;
         }
     }
+
+    public void move() {
+        // Applique le mouvement selon la direction actuelle
+        switch (direction) {
+            case UP -> y -= SPEED;
+            case DOWN -> y += SPEED;
+            case LEFT -> x -= SPEED;
+            case RIGHT -> x += SPEED;
+        }
+        
+        // Garde Pacman dans les limites
+        x = Math.max(0, Math.min(x, lab.getWidth() - PACMAN_WIDTH));
+        y = Math.max(0, Math.min(y, lab.getHeight() - PACMAN_HEIGHT));
+    }
+    
 
     private boolean canMoveTo(int x, int y) {
         // Vérification des bords
@@ -91,23 +115,29 @@ public class Pacman {
         return false;
     }
 
-    private void loseLife() {
+    public void loseLife() {
         lives--;
-        if (lives > 0) {
-            characters.initPacmanPosition(lab);
-        } else {
-            gameOver();
-        }
-    }
-
-    private void gameOver() {
-        System.out.println("Game Over!");
-        // Ici vous pourrez ajouter une logique de fin de jeu
     }
 
     private void updateSprite() {
         img = characters.getPacmanImage(direction, mouthOpen);
     }
+
+    public void respawn() {
+    // Réinitialisation position
+    Random rand = new Random();
+    while (true) {
+        int tempX = rand.nextInt(Labyrinth.COLS);
+        int tempY = rand.nextInt(Labyrinth.ROWS);
+        
+        if (lab.maze[tempX][tempY].cellval == CellType.POINT.getValue()) {
+            this.x = tempX * Cell.size + Cell.size/2;
+            this.y = tempY * Cell.size + Cell.size/2;
+            this.direction = Direction.RIGHT;
+            break;
+        }
+    }
+}
 
     /*********************************************** GETTERS ***********************************************************/
  
