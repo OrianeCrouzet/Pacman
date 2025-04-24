@@ -10,7 +10,7 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Characters {
-    
+
     public enum GhostColor { RED, BLUE, YELLOW }
 
     /**
