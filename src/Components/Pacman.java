@@ -7,7 +7,7 @@ public class Pacman  {
 
     public int x, y;
 
-    private static final int SPEED = 2;
+    private static final int SPEED = 3;
     private static final int PACMAN_SIZE = Cell.size - 7; // Marge interne
     public static final int PACMAN_WIDTH = Cell.size * 3/4;  // 75% de la cellule
     public static final int PACMAN_HEIGHT = Cell.size * 3/4;
@@ -56,42 +56,36 @@ public class Pacman  {
         
         // Mise à jour de la direction si elle a changé
         if (newDir != this.direction) {
-            tryChangeDirection(newDir);
+            this.direction = newDir;
+            snapToGrid();
+            move();
         }
     }    
 
-    private void tryChangeDirection(Direction newDir) {
-        // Teste le mouvement dans la nouvelle direction
-        int testX = x, testY = y;
-        
-        switch (newDir) {
-            case UP -> testY -= SPEED;
-            case DOWN -> testY += SPEED;
-            case LEFT -> testX -= SPEED;
-            case RIGHT -> testX += SPEED;
-        }
-
-        if (canMoveTo(testX, testY)) {
-            this.direction = newDir;
-            snapToGrid();
-        }
-    }
-
-    private void snapToGrid() {
+    public void snapToGrid() {
         x = ((x + Cell.size/2) / Cell.size) * Cell.size;
         y = ((y + Cell.size/2) / Cell.size) * Cell.size;
     }
 
     public void move() {
-        // Applique le mouvement selon la direction actuelle
+        // Calcule la nouvelle position
+        int newX = x;
+        int newY = y;
+        
         switch (direction) {
-            case UP -> y -= SPEED;
-            case DOWN -> y += SPEED;
-            case LEFT -> x -= SPEED;
-            case RIGHT -> x += SPEED;
+            case UP -> newY -= SPEED;
+            case DOWN -> newY += SPEED;
+            case LEFT -> newX -= SPEED;
+            case RIGHT -> newX += SPEED;
         }
         
-        // Garde Pacman dans les limites
+        // Vérifie la collision avant de déplacer
+        if (canMoveTo(newX, newY)) {
+            x = newX;
+            y = newY;
+        } 
+        
+        // Garantit qu'on reste dans les limites de l'écran
         x = Math.max(0, Math.min(x, lab.getWidth() - PACMAN_WIDTH));
         y = Math.max(0, Math.min(y, lab.getHeight() - PACMAN_HEIGHT));
     }
@@ -122,6 +116,7 @@ public class Pacman  {
                 return false;
             }
             
+            // Vérifie si on ne rentre pas en collisions avec un mur
             if (lab.maze[cellX][cellY].cellval == CellType.WALL.getValue()) {
                 return false;
             }
@@ -158,6 +153,7 @@ public class Pacman  {
             this.x = tempX * Cell.size + Cell.size/2;
             this.y = tempY * Cell.size + Cell.size/2;
             this.direction = Direction.RIGHT;
+            snapToGrid();
             break;
         }
     }
