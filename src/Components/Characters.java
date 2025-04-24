@@ -10,11 +10,22 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Characters {
+    
     public enum GhostColor { RED, BLUE, YELLOW }
+
+    /**
+     * Sprites des fantômes ordonnés par couleur
+     */
     private final Map<GhostColor, GhostSprites> ghostSprites = new EnumMap<>(GhostColor.class);
+
+    /**
+     * Liste de tous les fantômes
+     */
     private final List<Ghosts> ghosts = new ArrayList<>();
 
-    // Structure pour stocker les sprites par couleur
+    /**
+     * Structure pour stocker les sprites par couleur
+     */
     private static class GhostSprites {
         Image left, right;
         
@@ -29,19 +40,24 @@ public class Characters {
         //loadPacmanImages();
     }
 
+    /**
+     * Fonction qui charge touts les sprites des fantômes par couleur (yeux vers la gauche et vers la droite)
+     */
     private void loadAllGhostSprites() {
         for (GhostColor color : GhostColor.values()) {
             String colorName = color.name().toLowerCase();
-            Image left = loadImage("ghost_" + colorName + "_left.png");
-            Image right = loadImage("ghost_" + colorName + "_right.png");
+            Image left = loadGhostImage("ghost_" + colorName + "_left.png");
+            Image right = loadGhostImage("ghost_" + colorName + "_right.png");
             ghostSprites.put(color, new GhostSprites(left, right));
         }
     }
 
     /**
      * Méthode robuste de chargement d'image avec gestion des erreurs
+     * @param path : le chemin vers la ressource image.png souhaitée
+     * @return : l'image chargée depuis les sources
      */
-    private Image loadImage(String path) {
+    private Image loadGhostImage(String path) {
         try (InputStream is = getClass().getResourceAsStream("/Images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
@@ -56,6 +72,10 @@ public class Characters {
         }
     }
 
+    /**
+     * Fonction qui créé une image de secours au cas où les images des fantômes ne soient pas chargées correctement
+     * @return : une image d'un fantôme rond et rouge, avec des yeux noirs
+     */
     private BufferedImage createFallbackGhostImage() {
         BufferedImage img = new BufferedImage(30, 30, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
@@ -71,27 +91,42 @@ public class Characters {
         return img;
     }
 
-    // Méthode utilitaire pour obtenir une image de fantôme
+    /**
+     * Méthode utilitaire pour obtenir une image de fantôme
+     * @param color : la couleur du fantôme 
+     * @param dir : la direction du regard du fantôme
+     * @return : l'image du fantôme en fonction des paramètres d'entrée
+     */
     public Image getGhostImage(GhostColor color, Direction dir) {
         GhostSprites sprites = ghostSprites.get(color);
         return (dir == Direction.LEFT) ? sprites.left : sprites.right;
     }
 
-    /***************************************************************************************************************/
+    /********************************** POSITIONNEMENT DES FANTÔMES ***********************************************/
 
-    // Initialisation des fantômes avec des couleurs variées
+    /**
+     * Initialisation des fantômes avec des couleurs variées
+     * @param lab : le labyrinthe courant
+     */
     public void initGhostsRandomPositions(Labyrinth lab) {
         ghosts.clear();
         GhostColor[] colors = GhostColor.values();
         Random rand = new Random();
         
-        for (int i = 0; i < colors.length; i++) {
-            Ghosts ghost = createGhostAtRandomPosition(rand, lab, colors[i]);
+        for (GhostColor color : colors) {
+            Ghosts ghost = createGhostAtRandomPosition(rand, lab, color);
             ghosts.add(ghost);
-            System.out.println("Ghost " + colors[i] + " créé à (" + ghost.x + "," + ghost.y + ")");
+            System.out.println("Ghost " + color + " créé à (" + ghost.x + "," + ghost.y + ")");
         }
     }
 
+    /**
+     * Création d'un fantôme à une position arbitraire
+     * @param rand : numéro aléatoire
+     * @param lab : le labyrinthe courant
+     * @param color : la couleur du fantôme à créer
+     * @return : un fantôme créé à une position aléatoire, de la couleur souhaitée
+     */
     private Ghosts createGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
         while (true) {
             int x = rand.nextInt(Labyrinth.COLS);
@@ -135,6 +170,8 @@ public class Characters {
         
         return true;
     }
+
+    /*********************************************** GETTERS ****************************************************************/
 
     /**
      * Fonction qui permet de récupérer le fantôme numéro i
