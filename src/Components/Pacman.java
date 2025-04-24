@@ -73,7 +73,13 @@ public class Pacman  {
 
         if (canMoveTo(testX, testY)) {
             this.direction = newDir;
+            snapToGrid();
         }
+    }
+
+    private void snapToGrid() {
+        x = ((x + Cell.size/2) / Cell.size) * Cell.size;
+        y = ((y + Cell.size/2) / Cell.size) * Cell.size;
     }
 
     public void move() {
@@ -90,19 +96,37 @@ public class Pacman  {
         y = Math.max(0, Math.min(y, lab.getHeight() - PACMAN_HEIGHT));
     }
     
-
-    private boolean canMoveTo(int x, int y) {
-        // Vérification des bords
-        if (x < 0 || y < 0 || x >= lab.getWidth() || y >= lab.getHeight()) {
-            return false;
+    private boolean canMoveTo(int xPixel, int yPixel) {
+        // 1. Vérification des bords de l'écran
+        if (xPixel < 0 || yPixel < 0 ||
+            xPixel + PACMAN_SIZE > lab.getWidth() || 
+            yPixel + PACMAN_SIZE > lab.getHeight()) {
+            return false; // Considère les bords comme des murs
         }
-
-        // Conversion en coordonnées de cellule
-        int cellX = x / Cell.size;
-        int cellY = y / Cell.size;
-
-        // Vérification des murs
-        return lab.maze[cellX][cellY].cellval != CellType.WALL.getValue();
+        
+        // 2. Vérification des murs du labyrinthe
+        int[][] checkPoints = {
+            {xPixel + PACMAN_SIZE/2, yPixel + PACMAN_SIZE/2}, // Centre
+            {xPixel, yPixel}, // Coin supérieur gauche
+            {xPixel + PACMAN_SIZE, yPixel}, // Coin supérieur droit
+            {xPixel, yPixel + PACMAN_SIZE}, // Coin inférieur gauche
+            {xPixel + PACMAN_SIZE, yPixel + PACMAN_SIZE} // Coin inférieur droit
+        };
+        
+        for (int[] point : checkPoints) {
+            int cellX = point[0] / Cell.size;
+            int cellY = point[1] / Cell.size;
+            
+            // Vérifie si on est dans les limites du labyrinthe
+            if (cellX < 0 || cellY < 0 || cellX >= Labyrinth.COLS || cellY >= Labyrinth.ROWS) {
+                return false;
+            }
+            
+            if (lab.maze[cellX][cellY].cellval == CellType.WALL.getValue()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean checkGhostCollisions(List<Ghosts> ghosts) {

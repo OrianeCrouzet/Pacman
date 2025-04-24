@@ -3,7 +3,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 
-public class MainContainer extends JPanel implements KeyListener{
+public class MainContainer extends JPanel implements KeyListener {
     private final Labyrinth labyrinth;
     private Timer gameTimer;
     private final JFrame frame;
@@ -106,13 +106,12 @@ public class MainContainer extends JPanel implements KeyListener{
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
-
-    @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Touche pressée: " + e.getKeyCode()); // DEBUG
         labyrinth.getPersonnages().getPacman().handleInput(e.getKeyCode());
     }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyReleased(KeyEvent e) {}
