@@ -6,6 +6,10 @@ public class MainContainer {
     private Timer gameTimer;
     private final JFrame frame;
 
+    private GameState gameState = GameState.RUNNING;
+
+    enum GameState { RUNNING, GAME_OVER }
+
     public MainContainer() {
         // Initialisation des composants
         labyrinth = new Labyrinth();
@@ -14,7 +18,6 @@ public class MainContainer {
         initializeGame();
     }
 
-    
     /** 
      * @return JFrame
      */
@@ -35,7 +38,7 @@ public class MainContainer {
      * 
      */
     private void initializeGame() {
-        labyrinth.initialiseGhostInMaze();  // Initialisation après la création du labyrinthe
+        labyrinth.initialiseCharactersInMaze();  // Initialisation après la création du labyrinthe
         setupGameLoop();
         frame.setVisible(true);  // On rend la fenêtre visible seulement quand tout est prêt
     }
@@ -52,9 +55,27 @@ public class MainContainer {
      * 
      */
     private void updateGame() {
-        for (Ghosts ghost : labyrinth.personnages.getGhosts()) {
+        // 1. Mise à jour de Pacman
+        labyrinth.getPersonnages().getPacman().update();
+        
+        // 2. Mise à jour des fantômes
+        for (Ghosts ghost : labyrinth.getPersonnages().getGhosts()) {
             ghost.move();
         }
+        
+        // 3. Vérification des collisions
+        if (labyrinth.getPersonnages().getPacman().checkGhostCollisions(labyrinth.getPersonnages().getGhosts())) {
+            if (labyrinth.getPersonnages().getPacman().getLives() > 0) {
+                // Respawn si il reste des vies
+                labyrinth.getPersonnages().initGhostsRandomPositions(labyrinth); // Réinitialiser uniquement les fantômes
+            } else {
+                // Game Over
+                gameState = GameState.GAME_OVER;
+                //showGameOverScreen();
+            }
+        }
+        
+        // 4. Rafraîchissement de l'affichage
         labyrinth.repaint();
     }
 

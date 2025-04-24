@@ -172,7 +172,7 @@ public class Ghosts {
         return Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2));
     }
 
-    //Getters
+      /*********************************************** GETTERS ***********************************************************/
 
     public Characters.GhostColor getColor() {
         return color;

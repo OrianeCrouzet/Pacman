@@ -33,8 +33,9 @@ public class Labyrinth extends JPanel {
     /**
      * 
      */
-    public void initialiseGhostInMaze(){
+    public void initialiseCharactersInMaze(){
         personnages.initGhostsRandomPositions(this);
+        personnages.initPacmanPosition(this);
     }
 
     /*Set cell state */
@@ -188,9 +189,8 @@ public class Labyrinth extends JPanel {
         }
     } 
 
-    // Classe représentant une arête
     /**
-     * 
+     * Classe représentant une arête
      */
     private static class Edge {
         int node1, node2;
@@ -201,9 +201,8 @@ public class Labyrinth extends JPanel {
         }
     }
 
-    // Union-Find (Disjoint-Set) pour Kruskal
     /**
-     * 
+     * Union-Find (Disjoint-Set) pour Kruskal
      */
     private static class UnionFind {
         private final int[] parent;
@@ -231,10 +230,11 @@ public class Labyrinth extends JPanel {
         }
     }
 
-    @Override
+    
     /**
      * 
      */
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
@@ -277,6 +277,25 @@ public class Labyrinth extends JPanel {
                            null);
             }
         }
+
+        // Dessin de Pacman
+        Pacman pacman = personnages.getPacman();
+        if (pacman != null) {
+            int drawX = pacman.x + (Cell.size - Pacman.PACMAN_WIDTH)/2;
+            int drawY = pacman.y + (Cell.size - Pacman.PACMAN_HEIGHT)/2;
+            
+            Image pacmanImage = personnages.getPacmanImage(
+                pacman.getDirection(), 
+                pacman.getMouthOpening()
+            );
+            
+            if (pacmanImage != null) {
+                g.drawImage(pacmanImage, 
+                           drawX, drawY, 
+                           Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT, 
+                           null);
+            }
+        }
     }
         
     }
@@ -291,6 +310,7 @@ public class Labyrinth extends JPanel {
 
     /**
      * 
+     * @return : 
      */
     @Override
     public int getWidth() {
@@ -299,6 +319,7 @@ public class Labyrinth extends JPanel {
     
     /**
      * 
+     * @return : 
      */
     @Override
     public int getHeight() {

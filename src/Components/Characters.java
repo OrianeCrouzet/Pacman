@@ -19,12 +19,19 @@ public class Characters {
     private final Map<GhostColor, GhostSprites> ghostSprites = new EnumMap<>(GhostColor.class);
 
     /**
+     * Sprites de pacman ordonnés par bouche ouverte ou fermée
+     */
+    private final Map<Direction, PacmanSprites> pacmanSprites = new EnumMap<>(Direction.class);
+
+    /**
      * Liste de tous les fantômes
      */
     private final List<Ghosts> ghosts = new ArrayList<>();
 
+    private Pacman pacman;
+
     /**
-     * Structure pour stocker les sprites par couleur
+     * Structure pour stocker les sprites des fantômes par couleur
      */
     private static class GhostSprites {
         Image left, right;
@@ -35,10 +42,24 @@ public class Characters {
         }
     }
 
+    /**
+     * Structure pour stocker les sprites de pacman par bouche ouverte ou fermée
+     */
+    private static class PacmanSprites {
+        Image mouthOpen, mouthClosed;
+
+        public PacmanSprites(Image open, Image closed){
+            this.mouthOpen = open;
+            this.mouthClosed = closed;
+        }
+    }
+
     public Characters() {
         loadAllGhostSprites();
-        //loadPacmanImages();
+        loadPacmanSprites();
     }
+
+    /********************************** INITIALISATION DES FANTÔMES ***********************************************/
 
     /**
      * Fonction qui charge touts les sprites des fantômes par couleur (yeux vers la gauche et vers la droite)
@@ -102,6 +123,56 @@ public class Characters {
         return (dir == Direction.LEFT) ? sprites.left : sprites.right;
     }
 
+
+    /********************************** INITIALISATION DE PACMAN ***********************************************/
+
+    /**
+     * Fonction qui charge tous les sprites de Pacman en fonction de s'il a la bouche ouverte ou fermée
+     */
+    private void loadPacmanSprites() {
+        for (Direction dir : Direction.values()) {
+            String dirName = dir.name().toLowerCase();
+            Image open = loadPacmanImage("pac_open_" + dirName + ".png");
+            Image closed = loadPacmanImage("pac_close_" + dirName + ".png");
+            pacmanSprites.put(dir, new PacmanSprites(open, closed));
+        }
+    }
+
+    /**
+     * Méthode robuste de chargement d'image avec gestion des erreurs
+     * @param path : le chemin vers la ressource image.png souhaitée
+     * @return : l'image chargée depuis les sources
+     */
+    private Image loadPacmanImage(String path) {
+        try (InputStream is = getClass().getResourceAsStream("/Images/" + path)) {
+            BufferedImage img = ImageIO.read(is);
+            BufferedImage compatible = new BufferedImage(
+                img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = compatible.createGraphics();
+            g.drawImage(img, 0, 0, null);
+            g.dispose();
+            return compatible;
+        } catch (Exception e) {
+            System.err.println("Erreur chargement " + path + ": " + e.getMessage());
+            return createFallbackPacmanImage();
+        }
+    }
+
+    private Image createFallbackPacmanImage() {
+        BufferedImage img = new BufferedImage(30, 30, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = img.createGraphics();
+        g.setColor(Color.YELLOW);
+        g.fillArc(0, 0, 30, 30, 45, 270); // Forme Pacman de base
+        g.dispose();
+        return img;
+    }
+
+    // Méthode d'accès principale
+    public Image getPacmanImage(Direction dir, boolean isMouthOpen) {
+        PacmanSprites sprites = pacmanSprites.get(dir);
+        return isMouthOpen ? sprites.mouthOpen : sprites.mouthClosed;
+    }
+
     /********************************** POSITIONNEMENT DES FANTÔMES ***********************************************/
 
     /**
@@ -132,7 +203,7 @@ public class Characters {
             int x = rand.nextInt(Labyrinth.COLS);
             int y = rand.nextInt(Labyrinth.ROWS);
             
-            if (isValidGhostPosition(lab, x, y)) {
+            if (isValidPosition(lab, x, y)) {
                 return new Ghosts(
                     x * Cell.size + Cell.size/2,
                     y * Cell.size + Cell.size/2,
@@ -145,14 +216,14 @@ public class Characters {
     }
 
     /**
-     * Vérifie si la position est valide pour un fantôme
+     * Vérifie si la position de départ est valide pour un personnage
      * @param lab : Le labyrinthe de différence
      * @param x : position x
      * @param y : position y
-     * @return : true si la position du fantôme est valide
+     * @return : true si la position du personnage est valide
      *         : false sinon
      */
-    private boolean isValidGhostPosition(Labyrinth lab, int x, int y) {
+    private boolean isValidPosition(Labyrinth lab, int x, int y) {
         // 1. La cellule doit être un chemin
         if (lab.maze[x][y].cellval != CellType.POINT.getValue()) {
             return false;
@@ -170,6 +241,36 @@ public class Characters {
         
         return true;
     }
+
+    /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
+
+    /**
+     * Initialisation de Pacman
+     * @param lab : le labyrinthe courant
+     */
+    public void initPacmanPosition(Labyrinth lab) {
+        Random rand = new Random();
+        
+        // Trouver une position valide
+        while (true) {
+            int x = rand.nextInt(Labyrinth.COLS);
+            int y = rand.nextInt(Labyrinth.ROWS);
+            
+            if (isValidPosition(lab, x, y)) {
+                // Créer Pacman au centre de la cellule
+                this.pacman = new Pacman(
+                    x * Cell.size + Cell.size/2,
+                    y * Cell.size + Cell.size/2,
+                    lab,
+                    getPacmanImage(Direction.RIGHT, true),
+                    this
+                );
+                System.out.println("Pacman initialisé en [" + x + "," + y + "]");
+                return;
+            }
+        }
+    }
+
 
     /*********************************************** GETTERS ****************************************************************/
 
@@ -189,6 +290,16 @@ public class Characters {
     public List<Ghosts> getGhosts() {
         return ghosts;
     }
+
+    /**
+     * Fonction qui retourne Pacman
+     * @return : Pacman
+     */
+    public Pacman getPacman(){
+        return pacman;
+    }
+
+
     
 }
 
