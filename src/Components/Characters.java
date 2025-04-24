@@ -1,7 +1,6 @@
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -11,62 +10,48 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 
 public class Characters {
-    // Enum pour les couleurs de fantômes
-    public enum GhostColor {
-        RED, BLUE, YELLOW
-    }
-
-    // Stockage des images de fantômes (Color -> Direction -> Image)
-    private Map<GhostColor, Map<Direction, Image>> ghostImages;
-
-    // Images de Pacman (Direction -> [ouvert, fermé])
-    private Map<Direction, Image[]> pacmanImages;
-
-    //Liste des fantômes
+    public enum GhostColor { RED, BLUE, YELLOW }
+    private final Map<GhostColor, GhostSprites> ghostSprites = new EnumMap<>(GhostColor.class);
     private final List<Ghosts> ghosts = new ArrayList<>();
 
+    // Structure pour stocker les sprites par couleur
+    private static class GhostSprites {
+        Image left, right;
+        
+        public GhostSprites(Image left, Image right) {
+            this.left = left;
+            this.right = right;
+        }
+    }
+
     public Characters() {
-        loadGhostImages();
+        loadAllGhostSprites();
         //loadPacmanImages();
     }
 
-    private void loadGhostImages() {
-        ghostImages = new EnumMap<>(GhostColor.class);
-        
+    private void loadAllGhostSprites() {
         for (GhostColor color : GhostColor.values()) {
-            Map<Direction, Image> dirImages = new EnumMap<>(Direction.class);
             String colorName = color.name().toLowerCase();
-            
-            // Chargement des images gauche/droite
-            dirImages.put(Direction.LEFT, loadGhostImage("Images/ghost_" + colorName + "_left.png"));
-            dirImages.put(Direction.RIGHT, loadGhostImage("Images/ghost_" + colorName + "_right.png"));
-            
-            ghostImages.put(color, dirImages);
+            Image left = loadImage("ghost_" + colorName + "_left.png");
+            Image right = loadImage("ghost_" + colorName + "_right.png");
+            ghostSprites.put(color, new GhostSprites(left, right));
         }
     }
 
     /**
      * Méthode robuste de chargement d'image avec gestion des erreurs
      */
-    private Image loadGhostImage(String src) {
-        try {
-            InputStream imgStream = getClass().getResourceAsStream(src);
-            if (imgStream != null) {
-                BufferedImage original = ImageIO.read(imgStream);
-                BufferedImage compatible = new BufferedImage(
-                    original.getWidth(),
-                    original.getHeight(),
-                    BufferedImage.TYPE_INT_ARGB);
-                
-                Graphics2D g2d = compatible.createGraphics();
-                g2d.drawImage(original, 0, 0, null);
-                g2d.dispose();
-                
-                return compatible;
-            }
-            throw new IOException("Fichier introuvable: " + src);
-        } catch (IOException e) {
-            System.err.println("Erreur de chargement: " + e.getMessage());
+    private Image loadImage(String path) {
+        try (InputStream is = getClass().getResourceAsStream("/Images/" + path)) {
+            BufferedImage img = ImageIO.read(is);
+            BufferedImage compatible = new BufferedImage(
+                img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = compatible.createGraphics();
+            g.drawImage(img, 0, 0, null);
+            g.dispose();
+            return compatible;
+        } catch (Exception e) {
+            System.err.println("Erreur chargement " + path + ": " + e.getMessage());
             return createFallbackGhostImage();
         }
     }
@@ -86,39 +71,24 @@ public class Characters {
         return img;
     }
 
-    private void loadPacmanImages() {
-        pacmanImages = new EnumMap<>(Direction.class);
-        
-        // Directions principales (on pourrait ajouter UP/DOWN si besoin)
-        Direction[] directions = {Direction.LEFT, Direction.RIGHT, Direction.UP, Direction.DOWN};
-        
-        for (Direction dir : directions) {
-            String dirName = dir.name().toLowerCase();
-            pacmanImages.put(dir, new Image[] {
-                Toolkit.getDefaultToolkit().getImage("Images/pac_open_" + dirName + ".png"),
-                Toolkit.getDefaultToolkit().getImage("Images/pac_close_" + dirName + ".png")
-            });
-        }
-    }
-
     // Méthode utilitaire pour obtenir une image de fantôme
-    public Image getGhostImage(GhostColor color, Direction direction) {
-        return ghostImages.get(color).get(direction);
+    public Image getGhostImage(GhostColor color, Direction dir) {
+        GhostSprites sprites = ghostSprites.get(color);
+        return (dir == Direction.LEFT) ? sprites.left : sprites.right;
     }
 
-    // Méthode utilitaire pour obtenir une image de Pacman
-    public Image getPacmanImage(Direction direction, boolean mouthOpen) {
-        return pacmanImages.get(direction)[mouthOpen ? 0 : 1];
-    }
+    /***************************************************************************************************************/
 
     // Initialisation des fantômes avec des couleurs variées
     public void initGhostsRandomPositions(Labyrinth lab) {
-        Random rand = new Random();
+        ghosts.clear();
         GhostColor[] colors = GhostColor.values();
+        Random rand = new Random();
         
-        for (GhostColor color : colors) {
-            Ghosts ghost = createGhostAtRandomPosition(rand, lab, color);
+        for (int i = 0; i < colors.length; i++) {
+            Ghosts ghost = createGhostAtRandomPosition(rand, lab, colors[i]);
             ghosts.add(ghost);
+            System.out.println("Ghost " + colors[i] + " créé à (" + ghost.x + "," + ghost.y + ")");
         }
     }
 
@@ -133,7 +103,7 @@ public class Characters {
                     y * Cell.size + Cell.size/2,
                     lab,
                     getGhostImage(color, Direction.LEFT),
-                    color 
+                    color
                 );
             }
         }
