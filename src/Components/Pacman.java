@@ -136,6 +136,7 @@ public class Pacman  {
 
     public void loseLife() {
         lives--;
+        System.out.println("Lives : " + lives);
     }
 
     private void updateSprite() {

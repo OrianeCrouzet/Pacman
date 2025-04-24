@@ -90,9 +90,8 @@ public class MainContainer extends JPanel implements KeyListener {
             ghost.move();
         }
     
-        // 4. Vérification des collisions
+        // 4. Vérification des collisions entre les fantômes et Pacman
         if (pacman.checkGhostCollisions(labyrinth.getPersonnages().getGhosts())) {
-            pacman.loseLife();
             if (pacman.getLives() > 0) {
                 respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
             } else {
