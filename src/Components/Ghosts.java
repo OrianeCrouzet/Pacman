@@ -34,6 +34,7 @@ public class Ghosts {
         if (!tryMove(currentDirCode) || checkGhostCollisions()) {
             char newDirCode = getValidDirection();
             direction = Direction.fromCode(newDirCode);
+            snapToGrid();
             tryMove(newDirCode);
         }
     }
@@ -117,6 +118,11 @@ public class Ghosts {
         }
         
         return 'U'; // Fallback (normalement jamais atteint si le fantôme n'est pas bloqué)
+    }
+
+    public void snapToGrid() {
+        x = ((x + Cell.size/2) / Cell.size) * Cell.size;
+        y = ((y + Cell.size/2) / Cell.size) * Cell.size;
     }
 
     /**
