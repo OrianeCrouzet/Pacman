@@ -1,3 +1,10 @@
+package components.entity;
+
+import components.CellType;
+import components.Characters;
+import components.Direction;
+import display.screen.Labyrinth;
+
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -8,9 +15,9 @@ public class Pacman  {
     public int x, y;
 
     private static final int SPEED = 3;
-    private static final int PACMAN_SIZE = Cell.size - 7; // Marge interne
-    public static final int PACMAN_WIDTH = Cell.size * 3/4;  // 75% de la cellule
-    public static final int PACMAN_HEIGHT = Cell.size * 3/4;
+    private static final int PACMAN_SIZE = Cell.SIZE - 7; // Marge interne
+    public static final int PACMAN_WIDTH = Cell.SIZE * 3/4;  // 75% de la cellule
+    public static final int PACMAN_HEIGHT = Cell.SIZE * 3/4;
 
     private static final int POINT_VALUE = 10;
     private int score = 0;
@@ -27,8 +34,8 @@ public class Pacman  {
     public Pacman(int i, int j, Labyrinth lab, Image pacmanImage, Characters characters) {
         this.lab = lab;
         // Alignement initial garanti sur la grille
-        this.x = (x / Cell.size) * Cell.size + Cell.size/2 - PACMAN_SIZE/2;
-        this.y = (y / Cell.size) * Cell.size + Cell.size/2 - PACMAN_SIZE/2;
+        this.x = (x / Cell.SIZE) * Cell.SIZE + Cell.SIZE /2 - PACMAN_SIZE/2;
+        this.y = (y / Cell.SIZE) * Cell.SIZE + Cell.SIZE /2 - PACMAN_SIZE/2;
         this.img = pacmanImage;
 
         this.direction = Direction.RIGHT;
@@ -66,8 +73,8 @@ public class Pacman  {
     }    
 
     public void snapToGrid() {
-        x = ((x + Cell.size/2) / Cell.size) * Cell.size;
-        y = ((y + Cell.size/2) / Cell.size) * Cell.size;
+        x = ((x + Cell.SIZE /2) / Cell.SIZE) * Cell.SIZE;
+        y = ((y + Cell.SIZE /2) / Cell.SIZE) * Cell.SIZE;
     }
 
     public void move() {
@@ -112,8 +119,8 @@ public class Pacman  {
         };
         
         for (int[] point : checkPoints) {
-            int cellX = point[0] / Cell.size;
-            int cellY = point[1] / Cell.size;
+            int cellX = point[0] / Cell.SIZE;
+            int cellY = point[1] / Cell.SIZE;
             
             // Vérifie si on est dans les limites du labyrinthe
             if (cellX < 0 || cellY < 0 || cellX >= Labyrinth.COLS || cellY >= Labyrinth.ROWS) {
@@ -134,8 +141,8 @@ public class Pacman  {
         int centerY = y + PACMAN_HEIGHT / 2;
         
         // Conversion en coordonnées de grille
-        int gridX = centerX / Cell.size;
-        int gridY = centerY / Cell.size;
+        int gridX = centerX / Cell.SIZE;
+        int gridY = centerY / Cell.SIZE;
         
         // Vérification des limites
         if (gridX >= 0 && gridX < Labyrinth.COLS && 
@@ -152,10 +159,10 @@ public class Pacman  {
                 System.out.println("Position Pacman: " + x + "," + y);
                 
                 // Rafraîchissement précis
-                lab.repaint(gridX * Cell.size, 
-                                 gridY * Cell.size, 
-                                 Cell.size, 
-                                 Cell.size);
+                lab.repaint(gridX * Cell.SIZE,
+                                 gridY * Cell.SIZE,
+                                 Cell.SIZE,
+                                 Cell.SIZE);
             }
         }
     }
@@ -178,7 +185,7 @@ public class Pacman  {
 
     public boolean checkGhostCollisions(List<Ghosts> ghosts) {
         for (Ghosts ghost : ghosts) {
-            if (Math.abs(x - ghost.x) < Cell.size/2 && Math.abs(y - ghost.y) < Cell.size/2) {
+            if (Math.abs(x - ghost.x) < Cell.SIZE /2 && Math.abs(y - ghost.y) < Cell.SIZE /2) {
                 loseLife();
                 return true;
             }
@@ -203,8 +210,8 @@ public class Pacman  {
         int tempY = rand.nextInt(Labyrinth.ROWS);
         
         if (lab.maze[tempX][tempY].cellval == CellType.POINT.getValue()) {
-            this.x = tempX * Cell.size + Cell.size/2;
-            this.y = tempY * Cell.size + Cell.size/2;
+            this.x = tempX * Cell.SIZE + Cell.SIZE /2;
+            this.y = tempY * Cell.SIZE + Cell.SIZE /2;
             this.direction = Direction.RIGHT;
             snapToGrid();
             break;

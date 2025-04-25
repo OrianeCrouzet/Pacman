@@ -1,3 +1,5 @@
+package components;
+
 public enum CellType {
     POINT(1),   // Point à manger
     WALL(0),    // Mur

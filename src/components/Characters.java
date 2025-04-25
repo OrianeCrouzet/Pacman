@@ -1,3 +1,9 @@
+package components;
+
+import components.entity.Cell;
+import components.entity.Ghosts;
+import components.entity.Pacman;
+import display.screen.Labyrinth;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -79,7 +85,7 @@ public class Characters {
      * @return : l'image chargée depuis les sources
      */
     private Image loadGhostImage(String path) {
-        try (InputStream is = getClass().getResourceAsStream("/Images/" + path)) {
+        try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
                 img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -144,7 +150,7 @@ public class Characters {
      * @return : l'image chargée depuis les sources
      */
     private Image loadPacmanImage(String path) {
-        try (InputStream is = getClass().getResourceAsStream("/Images/" + path)) {
+        try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
                 img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -205,8 +211,8 @@ public class Characters {
             
             if (isValidPosition(lab, x, y)) {
                 return new Ghosts(
-                    x * Cell.size + Cell.size/2,
-                    y * Cell.size + Cell.size/2,
+                    x * Cell.SIZE + Cell.SIZE /2,
+                    y * Cell.SIZE + Cell.SIZE /2,
                     lab,
                     getGhostImage(color, Direction.LEFT),
                     color
@@ -231,8 +237,8 @@ public class Characters {
         
         // 2. Vérifie qu'aucun fantôme n'est déjà trop proche
         for (Ghosts existing : ghosts) {
-            int ghostCellX = existing.x / Cell.size;
-            int ghostCellY = existing.y / Cell.size;
+            int ghostCellX = existing.x / Cell.SIZE;
+            int ghostCellY = existing.y / Cell.SIZE;
             
             if (Math.abs(ghostCellX - x) < 2 && Math.abs(ghostCellY - y) < 2) {
                 return false; // Évite le chevauchement
@@ -259,8 +265,8 @@ public class Characters {
             if (isValidPosition(lab, x, y)) {
                 // Créer Pacman au centre de la cellule
                 this.pacman = new Pacman(
-                    x * Cell.size + Cell.size/2,
-                    y * Cell.size + Cell.size/2,
+                    x * Cell.SIZE + Cell.SIZE /2,
+                    y * Cell.SIZE + Cell.SIZE /2,
                     lab,
                     getPacmanImage(Direction.RIGHT, true),
                     this

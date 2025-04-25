@@ -1,3 +1,11 @@
+package display;
+
+import components.entity.Cell;
+import components.entity.Ghosts;
+import components.entity.Pacman;
+import display.screen.Labyrinth;
+import display.screen.MainMenu;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -26,11 +34,11 @@ public class MainContainer extends JPanel implements KeyListener {
      */
     private JFrame createMainWindow() {
         JFrame window = new JFrame("PACMAN");
-        int width = Labyrinth.COLS * Cell.size;
-        int height = Labyrinth.ROWS * Cell.size;
+        int width = Labyrinth.COLS * Cell.SIZE;
+        int height = Labyrinth.ROWS * Cell.SIZE;
         window.setSize(width + 16, height + 39); // Compensation pour les bordures
         //window.setSize(750, 800);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setDefaultCloseOperation(EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setLayout(new BorderLayout());
         window.add(labyrinth, BorderLayout.CENTER);

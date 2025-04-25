@@ -1,12 +1,19 @@
+package components.entity;
+
+import components.CellType;
+import components.Characters;
+import components.Direction;
+import display.screen.Labyrinth;
+
 import java.awt.Image;
 import java.util.Random;
 
 public class Ghosts {
     public int x, y;
     private static final int SPEED = 3;
-    private static final int GHOST_SIZE = Cell.size - 7; // Marge interne
-    public static final int GHOST_WIDTH = Cell.size * 3/4;  // 75% de la cellule
-    public static final int GHOST_HEIGHT = Cell.size * 3/4;
+    private static final int GHOST_SIZE = Cell.SIZE - 7; // Marge interne
+    public static final int GHOST_WIDTH = Cell.SIZE * 3/4;  // 75% de la cellule
+    public static final int GHOST_HEIGHT = Cell.SIZE * 3/4;
     private final Labyrinth lab;
 
     private final Characters.GhostColor color;
@@ -16,8 +23,8 @@ public class Ghosts {
     public Ghosts(int x, int y, Labyrinth lab, Image img, Characters.GhostColor color) {
         this.lab = lab;
         // Alignement initial garanti sur la grille
-        this.x = (x / Cell.size) * Cell.size + Cell.size/2 - GHOST_SIZE/2;
-        this.y = (y / Cell.size) * Cell.size + Cell.size/2 - GHOST_SIZE/2;
+        this.x = (x / Cell.SIZE) * Cell.SIZE + Cell.SIZE /2 - GHOST_SIZE/2;
+        this.y = (y / Cell.SIZE) * Cell.SIZE + Cell.SIZE /2 - GHOST_SIZE/2;
         this.img = img;
         this.color = color;
         this.direction = Direction.LEFT;
@@ -86,8 +93,8 @@ public class Ghosts {
         };
         
         for (int[] point : checkPoints) {
-            int cellX = point[0] / Cell.size;
-            int cellY = point[1] / Cell.size;
+            int cellX = point[0] / Cell.SIZE;
+            int cellY = point[1] / Cell.SIZE;
             
             // Vérifie si on est dans les limites du labyrinthe
             if (cellX < 0 || cellY < 0 || cellX >= Labyrinth.COLS || cellY >= Labyrinth.ROWS) {
@@ -121,8 +128,8 @@ public class Ghosts {
     }
 
     public void snapToGrid() {
-        x = ((x + Cell.size/2) / Cell.size) * Cell.size;
-        y = ((y + Cell.size/2) / Cell.size) * Cell.size;
+        x = ((x + Cell.SIZE /2) / Cell.SIZE) * Cell.SIZE;
+        y = ((y + Cell.SIZE /2) / Cell.SIZE) * Cell.SIZE;
     }
 
     /**
