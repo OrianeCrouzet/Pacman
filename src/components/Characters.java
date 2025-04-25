@@ -3,8 +3,8 @@ package components;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
+import components.entity.SpecialGhost;
 import display.screen.Labyrinth;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -30,7 +30,7 @@ public class Characters {
     private final Map<Direction, PacmanSprites> pacmanSprites = new EnumMap<>(Direction.class);
 
     /**
-     * Liste de tous les fantômes
+     * Liste de tous les fantômes, y compris le fantôme spécial !
      */
     private final List<Ghosts> ghosts = new ArrayList<>();
 
@@ -65,7 +65,7 @@ public class Characters {
         loadPacmanSprites();
     }
 
-    /********************************** INITIALISATION DES FANTÔMES ***********************************************/
+    /********************************** INITIALISATION DES FANTÔMES BASIQUES ***********************************************/
 
     /**
      * Fonction qui charge touts les sprites des fantômes par couleur (yeux vers la gauche et vers la droite)
@@ -129,7 +129,6 @@ public class Characters {
         return (dir == Direction.LEFT) ? sprites.left : sprites.right;
     }
 
-
     /********************************** INITIALISATION DE PACMAN ***********************************************/
 
     /**
@@ -179,7 +178,7 @@ public class Characters {
         return isMouthOpen ? sprites.mouthOpen : sprites.mouthClosed;
     }
 
-    /********************************** POSITIONNEMENT DES FANTÔMES ***********************************************/
+    /*************************** POSITIONNEMENT DES FANTÔMES BASIQUES ET DU FANTÔME SPECIAL ********************************/
 
     /**
      * Initialisation des fantômes avec des couleurs variées
@@ -187,14 +186,24 @@ public class Characters {
      */
     public void initGhostsRandomPositions(Labyrinth lab) {
         ghosts.clear();
-        GhostColor[] colors = GhostColor.values();
+        GhostColor[] allColors = GhostColor.values();
         Random rand = new Random();
-        
-        for (GhostColor color : colors) {
+        int lastIndex = allColors.length - 1;
+
+        //Fantômes basiques
+        for (int i = 0; i < lastIndex; i++) {
+            GhostColor color = allColors[i];
             Ghosts ghost = createGhostAtRandomPosition(rand, lab, color);
             ghosts.add(ghost);
             System.out.println("Ghost " + color + " créé à (" + ghost.x + "," + ghost.y + ")");
         }
+
+        //Fantôme spécial
+        GhostColor color = allColors[lastIndex];
+        SpecialGhost specialGhost = createSpecialGhostAtRandomPosition(rand, lab, color);
+        ghosts.add(specialGhost);
+        System.out.println("Ghost " + color + " créé à (" + specialGhost.x + "," + specialGhost.y + ")");
+
     }
 
     /**
@@ -246,6 +255,25 @@ public class Characters {
         }
         
         return true;
+    }
+
+    /************************************** CREATION DU FANTÔME SPECIAL ***********************************************/
+
+    private SpecialGhost createSpecialGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
+        while (true) {
+            int x = rand.nextInt(Labyrinth.COLS);
+            int y = rand.nextInt(Labyrinth.ROWS);
+            
+            if (isValidPosition(lab, x, y)) {
+                return new SpecialGhost(
+                    x * Cell.SIZE + Cell.SIZE /2,
+                    y * Cell.SIZE + Cell.SIZE /2,
+                    lab,
+                    getGhostImage(color, Direction.LEFT),
+                    color
+                );
+            }
+        }
     }
 
     /********************************** POSITIONNEMENT DE PACMAN ***********************************************/

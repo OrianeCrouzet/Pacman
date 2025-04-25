@@ -4,21 +4,20 @@ import components.CellType;
 import components.Characters;
 import components.Direction;
 import display.screen.Labyrinth;
-
 import java.awt.Image;
 import java.util.Random;
 
 public class Ghosts {
     public int x, y;
-    private static final int SPEED = 3;
-    private static final int GHOST_SIZE = Cell.SIZE - 7; // Marge interne
+    protected static final int SPEED = 3;
+    protected static final int GHOST_SIZE = Cell.SIZE - 7; // Marge interne
     public static final int GHOST_WIDTH = Cell.SIZE * 3/4;  // 75% de la cellule
     public static final int GHOST_HEIGHT = Cell.SIZE * 3/4;
-    private final Labyrinth lab;
+    protected final Labyrinth lab;
 
-    private final Characters.GhostColor color;
-    private Direction direction;
-    private final Image img;
+    protected final Characters.GhostColor color;
+    protected Direction direction;
+    protected final Image img;
 
     public Ghosts(int x, int y, Labyrinth lab, Image img, Characters.GhostColor color) {
         this.lab = lab;
@@ -51,7 +50,7 @@ public class Ghosts {
      * @param dirCode le code caractère de la direction ('L', 'R', 'U', 'D')
      * @return true si le déplacement a réussi, false sinon
      */
-    private boolean tryMove(char dirCode) {
+    protected boolean tryMove(char dirCode) {
         int newX = getNextX(dirCode);
         int newY = getNextY(dirCode);
         
@@ -112,7 +111,7 @@ public class Ghosts {
      * Trouve une direction valide de manière aléatoire
      * @return le code caractère de la direction ('L', 'R', 'U' ou 'D')
      */
-    private char getValidDirection() {
+    protected char getValidDirection() {
         // On mélange les directions pour un choix aléatoire
         Direction[] directions = Direction.values();
         shuffleDirections(directions);
@@ -167,7 +166,7 @@ public class Ghosts {
      * @return : true si les fantômes risquent de se croiser
      *         : false sinon
      */
-    private boolean checkGhostCollisions() {
+    protected boolean checkGhostCollisions() {
         for (Ghosts other : lab.personnages.getGhosts()) {
             if (other != this && distanceTo(other) < GHOST_SIZE) {
                 return true;

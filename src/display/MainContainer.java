@@ -4,14 +4,12 @@ import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.Labyrinth;
-import display.screen.MainMenu;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 
-public class MainContainer extends JPanel implements KeyListener {
+public class MainContainer extends JFrame implements KeyListener {
     private final Labyrinth labyrinth;
     private Timer gameTimer;
     private final JFrame frame;

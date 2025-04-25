@@ -4,7 +4,6 @@ import components.CellType;
 import components.Characters;
 import components.Direction;
 import display.screen.Labyrinth;
-
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -203,21 +202,22 @@ public class Pacman  {
     }
 
     public void respawn() {
-    // Réinitialisation position
-    Random rand = new Random();
-    while (true) {
-        int tempX = rand.nextInt(Labyrinth.COLS);
-        int tempY = rand.nextInt(Labyrinth.ROWS);
+        // Réinitialisation position
+        Random rand = new Random();
         
-        if (lab.maze[tempX][tempY].cellval == CellType.POINT.getValue()) {
-            this.x = tempX * Cell.SIZE + Cell.SIZE /2;
-            this.y = tempY * Cell.SIZE + Cell.SIZE /2;
-            this.direction = Direction.RIGHT;
-            snapToGrid();
-            break;
+        while (true) {
+            int tempX = rand.nextInt(Labyrinth.COLS);
+            int tempY = rand.nextInt(Labyrinth.ROWS);
+            
+            if (lab.maze[tempX][tempY].cellval != CellType.WALL.getValue()) {
+                this.x = tempX * Cell.SIZE + Cell.SIZE /2;
+                this.y = tempY * Cell.SIZE + Cell.SIZE /2;
+                this.direction = Direction.RIGHT;
+                snapToGrid();
+                break;
+            }
         }
     }
-}
 
     /*********************************************** GETTERS ***********************************************************/
  
