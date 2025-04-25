@@ -14,14 +14,16 @@ public class Cell {
     public int cellval;
 
 
+    //TODO voir à quoi sert first screen et fraise
+
     public Cell(){
         this.firstScreen= Toolkit.getDefaultToolkit().getImage("images/firstScreen.jpg");
         this.fraise = Toolkit.getDefaultToolkit().getImage("images/point.jpg");
         this.cellstate = true;
     }
 
-    
-    /** 
+
+    /**
      * @param g
      * @param x
      * @param y
@@ -32,7 +34,7 @@ public class Cell {
     }
 
     /**
-     * 
+     *
      * @param type
      */
     public void setCellVal(CellType type){

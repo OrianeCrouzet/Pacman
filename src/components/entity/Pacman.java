@@ -4,6 +4,7 @@ import components.CellType;
 import components.Characters;
 import components.Direction;
 import display.screen.Labyrinth;
+import javax.swing.*;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -19,9 +20,10 @@ public class Pacman  {
     public static final int PACMAN_HEIGHT = Cell.SIZE * 3/4;
 
     private static final int POINT_VALUE = 10;
+    //TODO
     private int score = 0;
 
-    private int lives;
+    private int lives = 1;
     private final Labyrinth lab;
     private Direction direction;
     private Image img;
@@ -39,7 +41,6 @@ public class Pacman  {
 
         this.direction = Direction.RIGHT;
         this.mouthOpen = true;
-        this.lives = 3;
         this.characters = characters;
 
     }
@@ -52,14 +53,9 @@ public class Pacman  {
         updateSprite();
     }
 
-    public void handleInput(int keyCode) {
-        Direction newDir = switch (keyCode) {
-            case KeyEvent.VK_Z -> Direction.UP; 
-            case KeyEvent.VK_S -> Direction.DOWN;
-            case KeyEvent.VK_Q -> Direction.LEFT;
-            case KeyEvent.VK_D -> Direction.RIGHT;
-            default -> this.direction;
-        };
+    public void handleInput(Direction direction) {
+        //TODO passer avec inputMap()
+        Direction newDir = direction;
 
         System.out.println("Key detected");
         
@@ -69,7 +65,7 @@ public class Pacman  {
             snapToGrid();
             move();
         }
-    }    
+    }
 
     public void snapToGrid() {
         x = ((x + Cell.SIZE /2) / Cell.SIZE) * Cell.SIZE;
@@ -144,7 +140,7 @@ public class Pacman  {
         int gridY = centerY / Cell.SIZE;
         
         // Vérification des limites
-        if (gridX >= 0 && gridX < Labyrinth.COLS && 
+        if (gridX >= 0 && gridX < Labyrinth.COLS &&
             gridY >= 0 && gridY < Labyrinth.ROWS) {
             
             Cell cell = lab.maze[gridX][gridY];
@@ -223,6 +219,10 @@ public class Pacman  {
  
     public Image getSprite() {
         return img;
+    }
+
+    public int getScore(){
+        return score;
     }
 
     public int getLives() {

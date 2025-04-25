@@ -1,66 +1,90 @@
 package display;
 
-import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
-import display.screen.Labyrinth;
+import display.screen.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import javax.swing.*;
 
-public class MainContainer extends JFrame implements KeyListener {
-    private final Labyrinth labyrinth;
+public class MainContainer extends JFrame {
+
+    private CardLayout cardLayout;
+    private JPanel container;
+
+    private Labyrinth labyrinthPanel;
     private Timer gameTimer;
-    private final JFrame frame;
 
     private GameState gameState = GameState.RUNNING;
     private int respawnTimer = 0;
 
-    enum GameState { RUNNING, GAME_OVER }
+    private GamePanel gamePanel;
+
+    enum GameState {MENU, RUNNING, GAME_OVER}
 
     public MainContainer() {
+        super("Pacman Game");
         // Initialisation des composants
-        labyrinth = new Labyrinth();
-        frame = createMainWindow();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(667, 1000);
+        setLocationRelativeTo(null);
+
+        cardLayout = new CardLayout();
+        container = new JPanel(cardLayout);
+
+        // Menu Screen
+        MainMenu menuScreen = new MainMenu(this);
+        container.add(menuScreen, GameState.MENU.name());
+
+        // Game Panel
+        labyrinthPanel = new Labyrinth();
+        gamePanel = new GamePanel(labyrinthPanel);
+        container.add(gamePanel, GameState.RUNNING.name());
+
+        // GAME OVER Screen
+        GameOver gameOver = new GameOver(this);
+        container.add(gameOver, GameState.GAME_OVER.name());
+
         gameTimer = null;
-        initializeGame();
+
+        add(container);
+        setVisible(true);
+
+        showMenu();
+
     }
 
-    /** 
-     * @return JFrame
-     */
-    private JFrame createMainWindow() {
-        JFrame window = new JFrame("PACMAN");
-        int width = Labyrinth.COLS * Cell.SIZE;
-        int height = Labyrinth.ROWS * Cell.SIZE;
-        window.setSize(width + 16, height + 39); // Compensation pour les bordures
-        //window.setSize(750, 800);
-        window.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        window.setLocationRelativeTo(null);
-        window.setLayout(new BorderLayout());
-        window.add(labyrinth, BorderLayout.CENTER);
-        return window;
+
+    public void showMenu() {
+        cardLayout.show(container, GameState.MENU.name());
     }
+
+    public void startGame() {
+        initializeGame();
+
+        cardLayout.show(container, GameState.RUNNING.name());
+    }
+
+    public void gameOver() {
+        setSize(1300, 1000);
+        cardLayout.show(container, GameState.GAME_OVER.name());
+        labyrinthPanel.reset();
+        gameTimer.stop();
+    }
+
 
     /**
-     * 
+     *
      */
     private void initializeGame() {
-        labyrinth.initialiseCharactersInMaze();  // Initialisation après la création du labyrinthe
-        setUpKeyContent();
+        setSize(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
+        gameState = GameState.RUNNING;
+        labyrinthPanel.generateMaze();
         setupGameLoop();
-        frame.setVisible(true);  // On rend la fenêtre visible seulement quand tout est prêt
-    }
-
-    private void setUpKeyContent(){
-        setFocusable(true);
-        requestFocusInWindow();
-        frame.addKeyListener(this);
+        gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
     }
 
     /**
-     * 
+     *
      */
     private void setupGameLoop() {
         gameTimer = new Timer(30, e -> updateGame());
@@ -68,57 +92,48 @@ public class MainContainer extends JFrame implements KeyListener {
     }
 
     /**
-     * 
+     *
      */
     private void updateGame() {
         // 0. Vérification de l'état du jeu
         if (gameState != GameState.RUNNING) return;
-    
-        Pacman pacman = labyrinth.getPersonnages().getPacman();
-    
+
+        Pacman pacman = labyrinthPanel.getPersonnages().getPacman();
+
         // 1. Gestion du respawn si nécessaire
         if (respawnTimer > 0) {
             respawnTimer--;
             if (respawnTimer == 0) {
                 pacman.respawn();
-                labyrinth.getPersonnages().initGhostsRandomPositions(labyrinth);
+                labyrinthPanel.getPersonnages().initGhostsRandomPositions(labyrinthPanel);
             }
-            labyrinth.repaint();
+            labyrinthPanel.repaint();
             return;
         }
-    
+
         // 2. Mise à jour de Pacman
         pacman.move();
         pacman.update();
-        
+
         // 3. Mise à jour des fantômes
-        for (Ghosts ghost : labyrinth.getPersonnages().getGhosts()) {
+        for (Ghosts ghost : labyrinthPanel.getPersonnages().getGhosts()) {
             ghost.move();
         }
-    
+
         // 4. Vérification des collisions entre les fantômes et Pacman
-        if (pacman.checkGhostCollisions(labyrinth.getPersonnages().getGhosts())) {
+        if (pacman.checkGhostCollisions(labyrinthPanel.getPersonnages().getGhosts())) {
             if (pacman.getLives() > 0) {
                 respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
             } else {
-                gameState = GameState.GAME_OVER;
                 System.out.println("Game Over!");
+                gameState = GameState.GAME_OVER;
+                gameOver();
             }
         }
-        
+
         // 5. Rafraîchissement
-        labyrinth.repaint();
+        labyrinthPanel.repaint();
+        gamePanel.updateHUD();
     }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        labyrinth.getPersonnages().getPacman().handleInput(e.getKeyCode());
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {}
-
-    @Override
-    public void keyReleased(KeyEvent e) {}
 
 }
