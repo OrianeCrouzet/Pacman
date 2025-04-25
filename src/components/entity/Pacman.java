@@ -222,6 +222,10 @@ public class Pacman  {
         return img;
     }
 
+    public int getScore(){
+        return score;
+    }
+
     public int getLives() {
         return lives;
     }

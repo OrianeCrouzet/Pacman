@@ -23,6 +23,9 @@ public class Labyrinth extends JPanel {
 
 
     public static final int ROWS = 20, COLS = 20;
+    public static final int SCREEN_WIDTH = Labyrinth.COLS*Cell.SIZE + 16;
+    public static final int SCREEN_HEIGHT = Labyrinth.COLS*Cell.SIZE + 16;
+
     private static final int CELL_SIZE = CellType.SIZE.getValue();
     private static final int DOT_SIZE = 6;
     private static final int DOT_OFFSET = CELL_SIZE / 2 - 3;
@@ -354,6 +357,7 @@ public class Labyrinth extends JPanel {
         }
 
     }
+
 
     /**
      * @return

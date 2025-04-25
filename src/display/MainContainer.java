@@ -3,11 +3,12 @@ package display;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
+import display.screen.GamePanel;
+import display.screen.HUDPanel;
 import display.screen.Labyrinth;
 import display.screen.MainMenu;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import javax.swing.*;
 
 
@@ -21,6 +22,8 @@ public class MainContainer extends JFrame {
 
     private GameState gameState = GameState.RUNNING;
     private int respawnTimer = 0;
+
+    private GamePanel gamePanel;
 
     enum GameState {MENU, RUNNING, GAME_OVER}
 
@@ -40,7 +43,9 @@ public class MainContainer extends JFrame {
 
         // Game Panel
         labyrinthPanel = new Labyrinth(this);
-        container.add(labyrinthPanel, GameState.RUNNING.name());
+        gamePanel = new GamePanel(labyrinthPanel);
+        container.add(gamePanel, GameState.RUNNING.name());
+
         gameTimer = null;
 
         add(container);
@@ -56,9 +61,10 @@ public class MainContainer extends JFrame {
     }
 
     public void startGame() {
-        setSize(Labyrinth.COLS*Cell.SIZE + 16, Labyrinth.ROWS*Cell.SIZE + 39);
+        setSize(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT+ HUDPanel.HUD_HEIGHT+23); // +23 car sinon le bas est cut
         labyrinthPanel.generateMaze();
         initializeGame();
+        gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
@@ -120,6 +126,7 @@ public class MainContainer extends JFrame {
 
         // 5. Rafraîchissement
         labyrinthPanel.repaint();
+        gamePanel.updateHUD();
     }
 
 }
