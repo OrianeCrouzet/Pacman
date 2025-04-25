@@ -3,10 +3,8 @@ package display;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.*;
-
 import java.awt.*;
 import javax.swing.*;
-
 
 public class MainContainer extends JFrame {
 
