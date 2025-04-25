@@ -11,10 +11,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import javax.swing.*;
 
-public class MainContainer extends JPanel implements KeyListener {
-    private final Labyrinth labyrinth;
+public class MainContainer extends JFrame implements KeyListener {
+
+    private CardLayout cardLayout;
+    private JPanel container;
+
+    private Labyrinth labyrinthPanel;
     private Timer gameTimer;
-    private final JFrame frame;
+//    private final JFrame frame;
 
     private GameState gameState = GameState.RUNNING;
     private int respawnTimer = 0;
@@ -22,6 +26,7 @@ public class MainContainer extends JPanel implements KeyListener {
     enum GameState { RUNNING, GAME_OVER }
 
     public MainContainer() {
+        super("Pacman Game");
         // Initialisation des composants
         labyrinth = new Labyrinth();
         frame = createMainWindow();
@@ -29,7 +34,7 @@ public class MainContainer extends JPanel implements KeyListener {
         initializeGame();
     }
 
-    /** 
+    /**
      * @return JFrame
      */
     private JFrame createMainWindow() {
@@ -41,28 +46,28 @@ public class MainContainer extends JPanel implements KeyListener {
         window.setDefaultCloseOperation(EXIT_ON_CLOSE);
         window.setLocationRelativeTo(null);
         window.setLayout(new BorderLayout());
-        window.add(labyrinth, BorderLayout.CENTER);
+        window.add(labyrinthPanel, BorderLayout.CENTER);
         return window;
     }
 
     /**
-     * 
+     *
      */
     private void initializeGame() {
-        labyrinth.initialiseCharactersInMaze();  // Initialisation après la création du labyrinthe
+        labyrinthPanel.initialiseCharactersInMaze();  // Initialisation après la création du labyrinthe
         setUpKeyContent();
         setupGameLoop();
-        frame.setVisible(true);  // On rend la fenêtre visible seulement quand tout est prêt
+//        frame.setVisible(true);  // On rend la fenêtre visible seulement quand tout est prêt
     }
 
-    private void setUpKeyContent(){
+    private void setUpKeyContent() {
         setFocusable(true);
         requestFocusInWindow();
-        frame.addKeyListener(this);
+//        frame.addKeyListener(this);
     }
 
     /**
-     * 
+     *
      */
     private void setupGameLoop() {
         gameTimer = new Timer(30, e -> updateGame());
@@ -70,36 +75,36 @@ public class MainContainer extends JPanel implements KeyListener {
     }
 
     /**
-     * 
+     *
      */
     private void updateGame() {
         // 0. Vérification de l'état du jeu
         if (gameState != GameState.RUNNING) return;
-    
-        Pacman pacman = labyrinth.getPersonnages().getPacman();
-    
+
+        Pacman pacman = labyrinthPanel.getPersonnages().getPacman();
+
         // 1. Gestion du respawn si nécessaire
         if (respawnTimer > 0) {
             respawnTimer--;
             if (respawnTimer == 0) {
                 pacman.respawn();
-                labyrinth.getPersonnages().initGhostsRandomPositions(labyrinth);
+                labyrinthPanel.getPersonnages().initGhostsRandomPositions(labyrinthPanel);
             }
-            labyrinth.repaint();
+            labyrinthPanel.repaint();
             return;
         }
-    
+
         // 2. Mise à jour de Pacman
         pacman.move();
         pacman.update();
-        
+
         // 3. Mise à jour des fantômes
-        for (Ghosts ghost : labyrinth.getPersonnages().getGhosts()) {
+        for (Ghosts ghost : labyrinthPanel.getPersonnages().getGhosts()) {
             ghost.move();
         }
-    
+
         // 4. Vérification des collisions entre les fantômes et Pacman
-        if (pacman.checkGhostCollisions(labyrinth.getPersonnages().getGhosts())) {
+        if (pacman.checkGhostCollisions(labyrinthPanel.getPersonnages().getGhosts())) {
             if (pacman.getLives() > 0) {
                 respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
             } else {
@@ -107,20 +112,22 @@ public class MainContainer extends JPanel implements KeyListener {
                 System.out.println("Game Over!");
             }
         }
-        
+
         // 5. Rafraîchissement
-        labyrinth.repaint();
+        labyrinthPanel.repaint();
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        labyrinth.getPersonnages().getPacman().handleInput(e.getKeyCode());
+        labyrinthPanel.getPersonnages().getPacman().handleInput(e.getKeyCode());
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
     @Override
-    public void keyReleased(KeyEvent e) {}
+    public void keyReleased(KeyEvent e) {
+    }
 
 }
