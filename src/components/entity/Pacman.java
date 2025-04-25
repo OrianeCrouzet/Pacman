@@ -20,6 +20,7 @@ public class Pacman  {
     public static final int PACMAN_HEIGHT = Cell.SIZE * 3/4;
 
     private static final int POINT_VALUE = 10;
+    //TODO
     private int score = 0;
 
     private int lives;
@@ -54,6 +55,7 @@ public class Pacman  {
     }
 
     public void handleInput(int keyCode) {
+        //TODO passer avec inputMap()
         Direction newDir = switch (keyCode) {
             case KeyEvent.VK_Z -> Direction.UP; 
             case KeyEvent.VK_S -> Direction.DOWN;
