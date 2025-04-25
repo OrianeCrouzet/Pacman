@@ -28,7 +28,7 @@ public class MainContainer extends JFrame {
         super("Pacman Game");
         // Initialisation des composants
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(800, 800);
+        setSize(667, 1000);
         setLocationRelativeTo(null);
 
         cardLayout = new CardLayout();
@@ -42,7 +42,6 @@ public class MainContainer extends JFrame {
         labyrinthPanel = new Labyrinth(this);
         container.add(labyrinthPanel, GameState.RUNNING.name());
         gameTimer = null;
-        initializeGame();
 
         add(container);
         setVisible(true);
@@ -56,6 +55,9 @@ public class MainContainer extends JFrame {
     }
 
     public void startGame() {
+        setSize(Labyrinth.COLS*Cell.SIZE + 16, Labyrinth.ROWS*Cell.SIZE + 39);
+        labyrinthPanel.generateMaze();
+        initializeGame();
         cardLayout.show(container, GameState.RUNNING.name());
     }
 

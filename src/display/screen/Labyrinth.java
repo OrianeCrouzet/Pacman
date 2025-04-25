@@ -40,9 +40,6 @@ public class Labyrinth extends JPanel {
             }
         }
 
-        generateMaze();
-
-
         //TODO déplacer dans un handler mais conflit de fenêtre
         this.mainFrame = mainFrame;
         setupListener();
@@ -103,7 +100,7 @@ public class Labyrinth extends JPanel {
     /**
      * Algorithme pour générer un labyrinthe avec Kruskal
      */
-    private void generateMaze() {
+    public void generateMaze() {
         generateAllPossibleWalls();
         shuffleEdges();
         createMazePaths();
