@@ -9,7 +9,7 @@ public class Cell {
 
     public Image firstScreen;
     public Image fraise;
-    public static int size;
+    public static final int SIZE = CellType.SIZE.getValue();
     public boolean cellstate;
     public int cellval;
 
@@ -17,7 +17,6 @@ public class Cell {
     public Cell(){
         this.firstScreen= Toolkit.getDefaultToolkit().getImage("images/firstScreen.jpg");
         this.fraise = Toolkit.getDefaultToolkit().getImage("images/point.jpg");
-        Cell.size = CellType.SIZE.getValue();
         this.cellstate = true;
     }
 

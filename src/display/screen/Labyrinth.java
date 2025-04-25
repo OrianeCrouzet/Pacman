@@ -276,8 +276,8 @@ public class Labyrinth extends JPanel {
         // Dessin des fantômes
         for (Ghosts ghost : personnages.getGhosts()) {
             if (ghost != null) {
-                int drawX = ghost.x + (Cell.SIZE - Ghosts.GHOST_WIDTH) / 2;
-                int drawY = ghost.y + (Cell.SIZE - Ghosts.GHOST_HEIGHT) / 2;
+                int drawX = ghost.x + (CellType.SIZE.getValue() - Ghosts.GHOST_WIDTH) / 2;
+                int drawY = ghost.y + (CellType.SIZE.getValue() - Ghosts.GHOST_HEIGHT) / 2;
 
                 Image ghostImage = personnages.getGhostImage(
                         ghost.getColor(),
@@ -295,8 +295,8 @@ public class Labyrinth extends JPanel {
             // Dessin de Pacman
             Pacman pacman = personnages.getPacman();
             if (pacman != null) {
-                int drawX = pacman.x + (Cell.SIZE - Pacman.PACMAN_WIDTH) / 2;
-                int drawY = pacman.y + (Cell.SIZE - Pacman.PACMAN_HEIGHT) / 2;
+                int drawX = pacman.x + (CellType.SIZE.getValue() - Pacman.PACMAN_WIDTH) / 2;
+                int drawY = pacman.y + (CellType.SIZE.getValue() - Pacman.PACMAN_HEIGHT) / 2;
 
                 Image pacmanImage = personnages.getPacmanImage(
                         pacman.getDirection(),
