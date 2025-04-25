@@ -22,8 +22,8 @@ public class Cell {
         this.cellstate = true;
     }
 
-    
-    /** 
+
+    /**
      * @param g
      * @param x
      * @param y
@@ -34,7 +34,7 @@ public class Cell {
     }
 
     /**
-     * 
+     *
      * @param type
      */
     public void setCellVal(CellType type){
