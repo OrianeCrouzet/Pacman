@@ -23,15 +23,41 @@ public class MainContainer extends JFrame implements KeyListener {
     private GameState gameState = GameState.RUNNING;
     private int respawnTimer = 0;
 
-    enum GameState { RUNNING, GAME_OVER }
+    enum GameState {MENU, RUNNING, GAME_OVER}
 
     public MainContainer() {
         super("Pacman Game");
         // Initialisation des composants
-        labyrinth = new Labyrinth();
-        frame = createMainWindow();
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(800, 800);
+        setLocationRelativeTo(null);
+
+        cardLayout = new CardLayout();
+        container = new JPanel(cardLayout);
+
+        // Menu Screen
+        MainMenu menuScreen = new MainMenu(this);
+        container.add(menuScreen, GameState.MENU.name());
+
+        // Game Panel
+        labyrinthPanel = new Labyrinth(this);
+        container.add(labyrinthPanel, GameState.RUNNING.name());
         gameTimer = null;
         initializeGame();
+
+        add(container);
+        setVisible(true);
+
+        showMenu();
+    }
+
+
+    public void showMenu() {
+        cardLayout.show(container, GameState.MENU.name());
+    }
+
+    public void startGame() {
+        cardLayout.show(container, GameState.RUNNING.name());
     }
 
     /**
