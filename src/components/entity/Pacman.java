@@ -5,6 +5,7 @@ import components.Characters;
 import components.Direction;
 import display.screen.Labyrinth;
 
+import javax.swing.*;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.util.List;
@@ -54,15 +55,9 @@ public class Pacman  {
         updateSprite();
     }
 
-    public void handleInput(int keyCode) {
+    public void handleInput(Direction direction) {
         //TODO passer avec inputMap()
-        Direction newDir = switch (keyCode) {
-            case KeyEvent.VK_Z -> Direction.UP; 
-            case KeyEvent.VK_S -> Direction.DOWN;
-            case KeyEvent.VK_Q -> Direction.LEFT;
-            case KeyEvent.VK_D -> Direction.RIGHT;
-            default -> this.direction;
-        };
+        Direction newDir = direction;
 
         System.out.println("Key detected");
         

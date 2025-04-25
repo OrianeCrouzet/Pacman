@@ -2,20 +2,21 @@ package display.screen;
 
 import components.CellType;
 import components.Characters;
+import components.Direction;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.MainContainer;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class Labyrinth extends JPanel {
-
-    private Labyrinth labyrinth;
 
     private final MainContainer mainFrame;
 
@@ -32,7 +33,6 @@ public class Labyrinth extends JPanel {
     private final UnionFind uf = new UnionFind(ROWS * COLS);
 
     public Labyrinth(MainContainer mainFrame) {
-        this.mainFrame = mainFrame;
         /*initialisation case du labyrinth */
         for (int x = 0; x < ROWS; x++) {
             for (int y = 0; y < COLS; y++) {
@@ -41,6 +41,13 @@ public class Labyrinth extends JPanel {
         }
 
         generateMaze();
+
+
+        //TODO déplacer dans un handler mais conflit de fenêtre
+        this.mainFrame = mainFrame;
+        setupListener();
+        this.setFocusable(true);
+        this.requestFocusInWindow();
     }
 
     /**
@@ -56,7 +63,40 @@ public class Labyrinth extends JPanel {
     /**
      *
      */
-    public void setCell() {
+    public void setupListener() {
+        InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = this.getActionMap();
+
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z,0), "moveUp");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Q,0), "moveLeft");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D,0), "moveRight");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S,0), "moveDown");
+
+
+        am.put("moveUp", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                personnages.getPacman().handleInput(Direction.UP);
+            }
+        });
+        am.put("moveLeft", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                personnages.getPacman().handleInput(Direction.LEFT);
+            }
+        });
+        am.put("moveRight", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                personnages.getPacman().handleInput(Direction.RIGHT);
+            }
+        });
+        am.put("moveDown", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                personnages.getPacman().handleInput(Direction.DOWN);
+            }
+        });
 
     }
 
