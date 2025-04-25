@@ -1,6 +1,5 @@
 package display;
 
-import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.*;
@@ -39,13 +38,13 @@ public class MainContainer extends JFrame {
         container.add(menuScreen, GameState.MENU.name());
 
         // Game Panel
-        labyrinthPanel = new Labyrinth(this);
+        labyrinthPanel = new Labyrinth();
         gamePanel = new GamePanel(labyrinthPanel);
         container.add(gamePanel, GameState.RUNNING.name());
 
         // GAME OVER Screen
         GameOver gameOver = new GameOver(this);
-        container.add(gameOver,GameState.GAME_OVER.name());
+        container.add(gameOver, GameState.GAME_OVER.name());
 
         gameTimer = null;
 
@@ -62,16 +61,16 @@ public class MainContainer extends JFrame {
     }
 
     public void startGame() {
-        setSize(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT+ HUDPanel.HUD_HEIGHT+23); // +23 car sinon le bas est cut
-        labyrinthPanel.generateMaze();
         initializeGame();
-        gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
+
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
-    public void GameOver(){
-
-        cardLayout.show(container,GameState.GAME_OVER.name());
+    public void gameOver() {
+        setSize(1300, 1000);
+        cardLayout.show(container, GameState.GAME_OVER.name());
+        labyrinthPanel.reset();
+        gameTimer.stop();
     }
 
 
@@ -79,8 +78,11 @@ public class MainContainer extends JFrame {
      *
      */
     private void initializeGame() {
-        labyrinthPanel.initialiseCharactersInMaze();  // Initialisation après la création du labyrinthe
+        setSize(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
+        gameState = GameState.RUNNING;
+        labyrinthPanel.generateMaze();
         setupGameLoop();
+        gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
     }
 
     /**
@@ -125,9 +127,9 @@ public class MainContainer extends JFrame {
             if (pacman.getLives() > 0) {
                 respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
             } else {
-                gameState = GameState.GAME_OVER;
                 System.out.println("Game Over!");
-                GameOver();
+                gameState = GameState.GAME_OVER;
+                gameOver();
             }
         }
 

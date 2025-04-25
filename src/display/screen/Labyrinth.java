@@ -18,13 +18,12 @@ import javax.swing.*;
 
 public class Labyrinth extends JPanel {
 
-    private final MainContainer mainFrame;
     public Characters personnages = new Characters();
 
 
     public static final int ROWS = 20, COLS = 20;
-    public static final int SCREEN_WIDTH = Labyrinth.COLS*Cell.SIZE + 16;
-    public static final int SCREEN_HEIGHT = Labyrinth.COLS*Cell.SIZE + 16;
+    public static final int SCREEN_WIDTH = Labyrinth.COLS * Cell.SIZE + 16;
+    public static final int SCREEN_HEIGHT = Labyrinth.COLS * Cell.SIZE + 16;
 
     private static final int CELL_SIZE = CellType.SIZE.getValue();
     private static final int DOT_SIZE = 6;
@@ -32,23 +31,18 @@ public class Labyrinth extends JPanel {
 
     public Cell[][] maze = new Cell[ROWS][COLS];
 
-    private final List<Edge> edges = new ArrayList<>();
-    private final UnionFind uf = new UnionFind(ROWS * COLS);
+    private List<Edge> edges = new ArrayList<>();
+    private UnionFind uf = new UnionFind(ROWS * COLS);
 
-    public Labyrinth(MainContainer mainFrame) {
-        /*initialisation case du labyrinth */
-        for (int x = 0; x < ROWS; x++) {
-            for (int y = 0; y < COLS; y++) {
-                maze[x][y] = new Cell();
-            }
-        }
-
+    public Labyrinth() {
+        emptyMaze();
         //TODO déplacer dans un handler mais conflit de fenêtre
-        this.mainFrame = mainFrame;
+
         setupListener();
         this.setFocusable(true);
         this.requestFocusInWindow();
     }
+
 
     /**
      *
@@ -67,10 +61,10 @@ public class Labyrinth extends JPanel {
         InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap am = this.getActionMap();
 
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z,0), "moveUp");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Q,0), "moveLeft");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D,0), "moveRight");
-        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S,0), "moveDown");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, 0), "moveUp");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), "moveLeft");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "moveRight");
+        im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "moveDown");
 
 
         am.put("moveUp", new AbstractAction() {
@@ -110,6 +104,15 @@ public class Labyrinth extends JPanel {
         fixCornerCases();
         fixBorderCases();
         fixCenterCases();
+        initialiseCharactersInMaze();
+    }
+
+    public void emptyMaze() {
+        for (int x = 0; x < ROWS; x++) {
+            for (int y = 0; y < COLS; y++) {
+                maze[x][y] = new Cell();
+            }
+        }
     }
 
     /**
@@ -380,5 +383,12 @@ public class Labyrinth extends JPanel {
     @Override
     public int getHeight() {
         return ROWS * CELL_SIZE;
+    }
+
+    public void reset() {
+        personnages = new Characters();
+        emptyMaze();
+        edges = new ArrayList<>();
+        uf = new UnionFind(ROWS * COLS);
     }
 }
