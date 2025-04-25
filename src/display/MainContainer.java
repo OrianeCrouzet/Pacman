@@ -47,6 +47,7 @@ public class MainContainer extends JFrame {
         setVisible(true);
 
         showMenu();
+
     }
 
 

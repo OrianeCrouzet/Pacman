@@ -67,7 +67,7 @@ public class Pacman  {
             snapToGrid();
             move();
         }
-    }    
+    }
 
     public void snapToGrid() {
         x = ((x + Cell.SIZE /2) / Cell.SIZE) * Cell.SIZE;
@@ -142,7 +142,7 @@ public class Pacman  {
         int gridY = centerY / Cell.SIZE;
         
         // Vérification des limites
-        if (gridX >= 0 && gridX < Labyrinth.COLS && 
+        if (gridX >= 0 && gridX < Labyrinth.COLS &&
             gridY >= 0 && gridY < Labyrinth.ROWS) {
             
             Cell cell = lab.maze[gridX][gridY];

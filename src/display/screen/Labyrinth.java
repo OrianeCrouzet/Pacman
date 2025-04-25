@@ -19,8 +19,8 @@ import javax.swing.*;
 public class Labyrinth extends JPanel {
 
     private final MainContainer mainFrame;
-
     public Characters personnages = new Characters();
+
 
     public static final int ROWS = 20, COLS = 20;
     private static final int CELL_SIZE = CellType.SIZE.getValue();
