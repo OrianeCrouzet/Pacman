@@ -1,3 +1,11 @@
+package display.screen;
+
+import components.CellType;
+import components.Characters;
+import components.entity.Cell;
+import components.entity.Ghosts;
+import components.entity.Pacman;
+import display.MainContainer;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -98,6 +106,7 @@ public class Labyrinth extends JPanel {
     
     /** 
      * Fonction qui connecte deux cellules adjacentes
+     *
      * @param edge : l'arête commune aux deux cellules adjacentes
      */
     private void connectCells(Edge edge) {
@@ -157,9 +166,10 @@ public class Labyrinth extends JPanel {
             fixBorderCell(COLS-1, y, COLS-2, y); // Droite
         }
     }
-    
+
     /**
      * Fonction qui corrige les bords des cellules
+     *
      * @param x
      * @param y
      * @param adjX
@@ -263,49 +273,48 @@ public class Labyrinth extends JPanel {
             }
         }
 
-       // Dessin des fantômes
-       for (Ghosts ghost : personnages.getGhosts()) {
-        if (ghost != null) {
-            int drawX = ghost.x + (Cell.size - Ghosts.GHOST_WIDTH)/2;
-            int drawY = ghost.y + (Cell.size - Ghosts.GHOST_HEIGHT)/2;
-            
-            Image ghostImage = personnages.getGhostImage(
-                ghost.getColor(),
-                ghost.getDirection()
-            );
-            
-            if (ghostImage != null) {
-                g.drawImage(ghostImage, 
-                           drawX, drawY, 
-                           Ghosts.GHOST_WIDTH, Ghosts.GHOST_HEIGHT, 
-                           null);
+        // Dessin des fantômes
+        for (Ghosts ghost : personnages.getGhosts()) {
+            if (ghost != null) {
+                int drawX = ghost.x + (Cell.SIZE - Ghosts.GHOST_WIDTH) / 2;
+                int drawY = ghost.y + (Cell.SIZE - Ghosts.GHOST_HEIGHT) / 2;
+
+                Image ghostImage = personnages.getGhostImage(
+                        ghost.getColor(),
+                        ghost.getDirection()
+                );
+
+                if (ghostImage != null) {
+                    g.drawImage(ghostImage,
+                            drawX, drawY,
+                            Ghosts.GHOST_WIDTH, Ghosts.GHOST_HEIGHT,
+                            null);
+                }
+            }
+
+            // Dessin de Pacman
+            Pacman pacman = personnages.getPacman();
+            if (pacman != null) {
+                int drawX = pacman.x + (Cell.SIZE - Pacman.PACMAN_WIDTH) / 2;
+                int drawY = pacman.y + (Cell.SIZE - Pacman.PACMAN_HEIGHT) / 2;
+
+                Image pacmanImage = personnages.getPacmanImage(
+                        pacman.getDirection(),
+                        pacman.getMouthOpening()
+                );
+
+                if (pacmanImage != null) {
+                    g.drawImage(pacmanImage,
+                            drawX, drawY,
+                            Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT,
+                            null);
+                }
             }
         }
 
-        // Dessin de Pacman
-        Pacman pacman = personnages.getPacman();
-        if (pacman != null) {
-            int drawX = pacman.x + (Cell.size - Pacman.PACMAN_WIDTH)/2;
-            int drawY = pacman.y + (Cell.size - Pacman.PACMAN_HEIGHT)/2;
-            
-            Image pacmanImage = personnages.getPacmanImage(
-                pacman.getDirection(), 
-                pacman.getMouthOpening()
-            );
-            
-            if (pacmanImage != null) {
-                g.drawImage(pacmanImage, 
-                           drawX, drawY, 
-                           Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT, 
-                           null);
-            }
-        }
-    }
-        
     }
 
     /**
-     * 
      * @return
      */
     public Characters getPersonnages() {
@@ -313,17 +322,15 @@ public class Labyrinth extends JPanel {
     }
 
     /**
-     * 
-     * @return : 
+     * @return :
      */
     @Override
     public int getWidth() {
         return COLS * CELL_SIZE;
     }
-    
+
     /**
-     * 
-     * @return : 
+     * @return :
      */
     @Override
     public int getHeight() {

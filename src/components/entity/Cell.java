@@ -1,3 +1,6 @@
+package components.entity;
+
+import components.CellType;
 
 import java.awt.*;
 import java.awt.image.ImageObserver;
@@ -26,7 +29,7 @@ public class Cell {
      * @param im
      */
     public void drawI(Graphics g, int x, int y, ImageObserver im){
-        g.drawImage(fraise, x*size+25,y*size+25,8,8,im);
+        g.drawImage(fraise, x* SIZE +25,y* SIZE +25,8,8,im);
     }
 
     /**

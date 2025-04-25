@@ -1,3 +1,5 @@
+package components;
+
 public enum Direction {
     LEFT('L'), 
     RIGHT('R'), 
