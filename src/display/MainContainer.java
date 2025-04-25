@@ -3,10 +3,7 @@ package display;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
-import display.screen.GamePanel;
-import display.screen.HUDPanel;
-import display.screen.Labyrinth;
-import display.screen.MainMenu;
+import display.screen.*;
 
 import java.awt.*;
 import javax.swing.*;
