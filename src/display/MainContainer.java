@@ -43,6 +43,10 @@ public class MainContainer extends JFrame {
         gamePanel = new GamePanel(labyrinthPanel);
         container.add(gamePanel, GameState.RUNNING.name());
 
+        // GAME OVER Screen
+        GameOver gameOver = new GameOver(this);
+        container.add(gameOver,GameState.GAME_OVER.name());
+
         gameTimer = null;
 
         add(container);
