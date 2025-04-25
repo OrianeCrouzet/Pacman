@@ -24,7 +24,7 @@ public class Pacman  {
     //TODO
     private int score = 0;
 
-    private int lives;
+    private int lives = 1;
     private final Labyrinth lab;
     private Direction direction;
     private Image img;
@@ -42,7 +42,6 @@ public class Pacman  {
 
         this.direction = Direction.RIGHT;
         this.mouthOpen = true;
-        this.lives = 3;
         this.characters = characters;
 
     }

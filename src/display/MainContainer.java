@@ -68,6 +68,11 @@ public class MainContainer extends JFrame {
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
+    public void GameOver(){
+
+        cardLayout.show(container,GameState.GAME_OVER.name());
+    }
+
 
     /**
      *
@@ -121,6 +126,7 @@ public class MainContainer extends JFrame {
             } else {
                 gameState = GameState.GAME_OVER;
                 System.out.println("Game Over!");
+                GameOver();
             }
         }
 

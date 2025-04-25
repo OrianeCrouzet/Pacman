@@ -4,6 +4,10 @@ import components.entity.Pacman;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class HUDPanel extends JPanel {
 
@@ -24,11 +28,37 @@ public class HUDPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        // Couleur du texte
         g.setColor(getForeground());
-        g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Score: " + pacman.getScore(), 20, 40);
-        g.drawString("Vies: " + pacman.getLives(), 200, 40);
+        Font pixelFont = null;
+
+        try {
+            // Charger la police depuis le classpath en utilisant un InputStream
+            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("font/PressStart2P-Regular.ttf");
+            if (fontStream == null) {
+                throw new IOException("Fichier de police non trouvé dans le classpath");
+            }
+            pixelFont = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(24f);
+
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(pixelFont);
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+
+            pixelFont = g.getFont();
+        }
+
+        g.setFont(pixelFont);
+
+        // Dessiner les textes
+        g.drawString("HIGH SCORE: ", 100, 40);
+        g.drawString(String.valueOf(pacman.getScore()),100,70);
+        g.drawString("Vies: " + pacman.getLives(), 600, 40);
+
+        g.setColor(Color.BLUE);
+        g.drawLine(0,75,1000,75);
     }
+
 
     public void refresh() {
         repaint();
