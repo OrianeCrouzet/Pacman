@@ -3,6 +3,7 @@ package display;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.*;
+
 import java.awt.*;
 import javax.swing.*;
 
@@ -25,8 +26,7 @@ public class MainContainer extends JFrame {
         super("Pacman Game");
         // Initialisation des composants
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(667, 1000);
-        setLocationRelativeTo(null);
+        setWindow(667,1000);
 
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
@@ -55,20 +55,22 @@ public class MainContainer extends JFrame {
 
 
     public void showMenu() {
+        setWindow(667,1000);
         cardLayout.show(container, GameState.MENU.name());
     }
 
     public void startGame() {
+        setWindow(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
         initializeGame();
 
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
-    public void gameOver() {
-        setSize(1300, 1000);
-        cardLayout.show(container, GameState.GAME_OVER.name());
+    public void gameOver()  {
+        setWindow(1300,1000);
         labyrinthPanel.reset();
         gameTimer.stop();
+        cardLayout.show(container, GameState.GAME_OVER.name());
     }
 
 
@@ -76,7 +78,6 @@ public class MainContainer extends JFrame {
      *
      */
     private void initializeGame() {
-        setSize(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
         gameState = GameState.RUNNING;
         labyrinthPanel.generateMaze();
         setupGameLoop();
@@ -89,6 +90,11 @@ public class MainContainer extends JFrame {
     private void setupGameLoop() {
         gameTimer = new Timer(30, e -> updateGame());
         gameTimer.start();
+    }
+
+    public void setWindow(int width, int height){
+        setSize(width, height);
+        setLocationRelativeTo(null);
     }
 
     /**
