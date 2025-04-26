@@ -24,4 +24,14 @@ public enum Direction {
         }
         return UP; // Fallback
     }
+
+    public Direction oppositeDirection(){
+        return switch (fromCode(code)){
+            case UP -> DOWN;
+            case DOWN -> UP;
+            case LEFT -> RIGHT;
+            case RIGHT -> LEFT;
+            default -> throw new RuntimeException("direction not availidable");
+        };
+    }
 }
