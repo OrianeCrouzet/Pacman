@@ -3,7 +3,7 @@ package components;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
-import components.entity.SpecialGhost;
+//import components.entity.SpecialGhost;
 import display.screen.Labyrinth;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -41,7 +41,7 @@ public class Characters {
      */
     private static class GhostSprites {
         Image left, right;
-        
+
         public GhostSprites(Image left, Image right) {
             this.left = left;
             this.right = right;
@@ -88,7 +88,7 @@ public class Characters {
         try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
-                img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = compatible.createGraphics();
             g.drawImage(img, 0, 0, null);
             g.dispose();
@@ -106,14 +106,14 @@ public class Characters {
     private BufferedImage createFallbackGhostImage() {
         BufferedImage img = new BufferedImage(30, 30, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
-        
+
         // Dessin d'un fantôme de base (cercle avec yeux)
         g.setColor(Color.RED);
         g.fillRoundRect(0, 0, 30, 30, 10, 10);
         g.setColor(Color.WHITE);
         g.fillOval(5, 8, 8, 8);
         g.fillOval(17, 8, 8, 8);
-        
+
         g.dispose();
         return img;
     }
@@ -152,7 +152,7 @@ public class Characters {
         try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
-                img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = compatible.createGraphics();
             g.drawImage(img, 0, 0, null);
             g.dispose();
@@ -198,11 +198,11 @@ public class Characters {
             System.out.println("Ghost " + color + " créé à (" + ghost.x + "," + ghost.y + ")");
         }
 
-        //Fantôme spécial
+/*        //Fantôme spécial
         GhostColor color = allColors[lastIndex];
         SpecialGhost specialGhost = createSpecialGhostAtRandomPosition(rand, lab, color);
         ghosts.add(specialGhost);
-        System.out.println("Ghost " + color + " créé à (" + specialGhost.x + "," + specialGhost.y + ")");
+        System.out.println("Ghost " + color + " créé à (" + specialGhost.x + "," + specialGhost.y + ")");*/
 
     }
 
@@ -217,14 +217,14 @@ public class Characters {
         while (true) {
             int x = rand.nextInt(Labyrinth.COLS);
             int y = rand.nextInt(Labyrinth.ROWS);
-            
+
             if (isValidPosition(lab, x, y)) {
                 return new Ghosts(
-                    x * Cell.SIZE + Cell.SIZE /2,
-                    y * Cell.SIZE + Cell.SIZE /2,
-                    lab,
-                    getGhostImage(color, Direction.LEFT),
-                    color
+                        x * Cell.SIZE + Cell.SIZE /2,
+                        y * Cell.SIZE + Cell.SIZE /2,
+                        lab,
+                        getGhostImage(color, Direction.LEFT),
+                        color
                 );
             }
         }
@@ -243,27 +243,27 @@ public class Characters {
         if (lab.maze[x][y].cellval != CellType.POINT.getValue()) {
             return false;
         }
-        
+
         // 2. Vérifie qu'aucun fantôme n'est déjà trop proche
         for (Ghosts existing : ghosts) {
             int ghostCellX = existing.x / Cell.SIZE;
             int ghostCellY = existing.y / Cell.SIZE;
-            
+
             if (Math.abs(ghostCellX - x) < 2 && Math.abs(ghostCellY - y) < 2) {
                 return false; // Évite le chevauchement
             }
         }
-        
+
         return true;
     }
 
-    /************************************** CREATION DU FANTÔME SPECIAL ***********************************************/
+    /*    *//************************************** CREATION DU FANTÔME SPECIAL ***********************************************//*
 
     private SpecialGhost createSpecialGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
         while (true) {
             int x = rand.nextInt(Labyrinth.COLS);
             int y = rand.nextInt(Labyrinth.ROWS);
-            
+
             if (isValidPosition(lab, x, y)) {
                 return new SpecialGhost(
                     x * Cell.SIZE + Cell.SIZE /2,
@@ -276,7 +276,7 @@ public class Characters {
         }
     }
 
-    /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
+ */   /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
 
     /**
      * Initialisation de Pacman
@@ -284,22 +284,22 @@ public class Characters {
      */
     public void initPacmanPosition(Labyrinth lab) {
         Random rand = new Random();
-        
+
         // Trouver une position valide
         while (true) {
             int x = rand.nextInt(Labyrinth.COLS);
             int y = rand.nextInt(Labyrinth.ROWS);
-            
+
             if (isValidPosition(lab, x, y)) {
                 // Créer Pacman au centre de la cellule
                 this.pacman = new Pacman(
-                    x * Cell.SIZE + Cell.SIZE /2,
-                    y * Cell.SIZE + Cell.SIZE /2,
-                    lab,
-                    getPacmanImage(Direction.RIGHT, true),
-                    this
+                        x * Cell.SIZE + Cell.SIZE /2,
+                        y * Cell.SIZE + Cell.SIZE /2,
+                        lab,
+                        getPacmanImage(Direction.RIGHT, true),
+                        this
                 );
-            
+
                 System.out.println("Pacman initialisé en (" + x + "," + y + ")");
                 return;
             }
@@ -335,7 +335,7 @@ public class Characters {
     }
 
 
-    
+
 }
 
 
