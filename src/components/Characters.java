@@ -200,14 +200,14 @@ public class Characters {
             GhostColor color = allColors[i];
             Ghosts ghost = createGhostAtRandomPosition(rand, lab, color);
             ghosts.add(ghost);
-            System.out.println("Ghost " + color + " créé à (" + ghost.x + "," + ghost.y + ")");
+            System.out.println("Ghost " + color + " créé à (" + ghost.c + "," + ghost.r + ")");
         }
 
 /*        //Fantôme spécial
         GhostColor color = allColors[lastIndex];
         SpecialGhost specialGhost = createSpecialGhostAtRandomPosition(rand, lab, color);
         ghosts.add(specialGhost);
-        System.out.println("Ghost " + color + " créé à (" + specialGhost.x + "," + specialGhost.y + ")");*/
+        System.out.println("Ghost " + color + " créé à (" + specialGhost.c + "," + specialGhost.r + ")");*/
 
     }
 
@@ -222,42 +222,46 @@ public class Characters {
     private Ghosts createGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
     (Labyrinth lab, GhostColor color) {
         while (true) {
-            int x = rand.nextInt(Labyrinth.COLS);
-            int y = rand.nextInt(Labyrinth.ROWS);
+            int c = rand.nextInt(lab.cols);
+            int r = rand.nextInt(lab.rows);
 
-            if (isValidPosition(lab, x, y)) {
-                return new Ghosts(
-                        x * Cell.SIZE + Cell.SIZE / 2,
-                        y * Cell.SIZE + Cell.SIZE / 2,
-                        lab,
-                        getGhostImage(color, Direction.LEFT),
-                        color
-                );
+            if (isValidPosition(lab, c, r)) {
+                return new int[]{c,r};
             }
         }
+    }
+    public Ghosts putGhost(Labyrinth lab,int c,int r, GhostColor color){
+        return new Ghosts(
+                c * Cell.SIZE + Cell.SIZE / 2,
+                r * Cell.SIZE + Cell.SIZE / 2,
+                lab,
+                getGhostImage(color, Direction.LEFT),
+                color
+        );
+
     }
 
     /**
      * Vérifie si la position de départ est valide pour un personnage
      *
      * @param lab : Le labyrinthe de différence
-     * @param x   : position x
-     * @param y   : position y
+     * @param c   : position c
+     * @param r   : position r
      * @return : true si la position du personnage est valide
      * : false sinon
      */
-    private boolean isValidPosition(Labyrinth lab, int x, int y) {
+    private boolean isValidPosition(Labyrinth lab, int c, int r) {
         // 1. La cellule doit être un chemin
-        if (lab.maze[x][y].cellval != CellType.POINT.getValue()) {
+        if (lab.maze[c][r].cellval != CellType.POINT.getValue()) {
             return false;
         }
 
         // 2. Vérifie qu'aucun fantôme n'est déjà trop proche
         for (Ghosts existing : ghosts) {
-            int ghostCellX = existing.x / Cell.SIZE;
-            int ghostCellY = existing.y / Cell.SIZE;
+            int ghostCellC = existing.c / Cell.SIZE;
+            int ghostCellR = existing.r / Cell.SIZE;
 
-            if (Math.abs(ghostCellX - x) < 2 && Math.abs(ghostCellY - y) < 2) {
+            if (Math.abs(ghostCellC - c) < 2 && Math.abs(ghostCellR - r) < 2) {
                 return false; // Évite le chevauchement
             }
         }
@@ -295,10 +299,10 @@ public class Characters {
 
         // Trouver une position valide
         while (true) {
-            int x = rand.nextInt(Labyrinth.COLS);
-            int y = rand.nextInt(Labyrinth.ROWS);
+            int c = rand.nextInt(lab.cols);
+            int r = rand.nextInt(lab.rows);
 
-            if (isValidPosition(lab, x, y)) {
+            if (isValidPosition(lab, c, r)) {
                 // Créer Pacman au centre de la cellule
                 this.pacman = new Pacman(
                         x * Cell.SIZE + Cell.SIZE / 2,
