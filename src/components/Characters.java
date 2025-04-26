@@ -192,8 +192,8 @@ public class Characters {
     public void initGhostsRandomPositions(Labyrinth lab) {
         ghosts.clear();
         GhostColor[] allColors = GhostColor.values();
-        Random rand = new Random();
-        int lastIndex = allColors.length - 1;
+
+        int lastIndex = allColors.length;
 
         //Fantômes basiques
         for (int i = 0; i < lastIndex; i++) {
@@ -214,7 +214,6 @@ public class Characters {
     /**
      * Création d'un fantôme à une position arbitraire
      *
-     * @param rand  : numéro aléatoire
      * @param lab   : le labyrinthe courant
      * @param color : la couleur du fantôme à créer
      * @return : un fantôme créé à une position aléatoire, de la couleur souhaitée
