@@ -1,9 +1,9 @@
 package components;
 
 public enum Direction {
-    LEFT('L'), 
-    RIGHT('R'), 
-    UP('U'), 
+    LEFT('L'),
+    RIGHT('R'),
+    UP('U'),
     DOWN('D');
 
     private final char code;

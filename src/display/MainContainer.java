@@ -4,8 +4,8 @@ import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.*;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 
 public class MainContainer extends JFrame {
 
@@ -26,7 +26,7 @@ public class MainContainer extends JFrame {
         super("Pacman Game");
         // Initialisation des composants
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setWindow(667,1000);
+        setWindow(667, 1000);
 
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
@@ -55,7 +55,7 @@ public class MainContainer extends JFrame {
 
 
     public void showMenu() {
-        setWindow(667,1000);
+        setWindow(667, 1000);
         cardLayout.show(container, GameState.MENU.name());
     }
 
@@ -66,8 +66,8 @@ public class MainContainer extends JFrame {
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
-    public void gameOver()  {
-        setWindow(1300,1000);
+    public void gameOver() {
+        setWindow(1300, 1000);
         labyrinthPanel.reset();
         gameTimer.stop();
         cardLayout.show(container, GameState.GAME_OVER.name());
@@ -92,7 +92,7 @@ public class MainContainer extends JFrame {
         gameTimer.start();
     }
 
-    public void setWindow(int width, int height){
+    public void setWindow(int width, int height) {
         setSize(width, height);
         setLocationRelativeTo(null);
     }

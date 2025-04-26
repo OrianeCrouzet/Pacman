@@ -3,21 +3,18 @@ package components;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
-//import components.entity.SpecialGhost;
 import display.screen.Labyrinth;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import javax.imageio.ImageIO;
+import java.util.*;
 
 public class Characters {
 
-    public enum GhostColor { RED, BLUE, YELLOW }
+    public enum GhostColor {RED, BLUE, YELLOW}
 
     /**
      * Sprites des fantômes ordonnés par couleur
@@ -54,7 +51,7 @@ public class Characters {
     private static class PacmanSprites {
         Image mouthOpen, mouthClosed;
 
-        public PacmanSprites(Image open, Image closed){
+        public PacmanSprites(Image open, Image closed) {
             this.mouthOpen = open;
             this.mouthClosed = closed;
         }
@@ -81,6 +78,7 @@ public class Characters {
 
     /**
      * Méthode robuste de chargement d'image avec gestion des erreurs
+     *
      * @param path : le chemin vers la ressource image.png souhaitée
      * @return : l'image chargée depuis les sources
      */
@@ -101,6 +99,7 @@ public class Characters {
 
     /**
      * Fonction qui créé une image de secours au cas où les images des fantômes ne soient pas chargées correctement
+     *
      * @return : une image d'un fantôme rond et rouge, avec des yeux noirs
      */
     private BufferedImage createFallbackGhostImage() {
@@ -120,8 +119,9 @@ public class Characters {
 
     /**
      * Méthode utilitaire pour obtenir une image de fantôme
-     * @param color : la couleur du fantôme 
-     * @param dir : la direction du regard du fantôme
+     *
+     * @param color : la couleur du fantôme
+     * @param dir   : la direction du regard du fantôme
      * @return : l'image du fantôme en fonction des paramètres d'entrée
      */
     public Image getGhostImage(GhostColor color, Direction dir) {
@@ -145,6 +145,7 @@ public class Characters {
 
     /**
      * Méthode robuste de chargement d'image avec gestion des erreurs
+     *
      * @param path : le chemin vers la ressource image.png souhaitée
      * @return : l'image chargée depuis les sources
      */
@@ -182,6 +183,7 @@ public class Characters {
 
     /**
      * Initialisation des fantômes avec des couleurs variées
+     *
      * @param lab : le labyrinthe courant
      */
     public void initGhostsRandomPositions(Labyrinth lab) {
@@ -208,8 +210,9 @@ public class Characters {
 
     /**
      * Création d'un fantôme à une position arbitraire
-     * @param rand : numéro aléatoire
-     * @param lab : le labyrinthe courant
+     *
+     * @param rand  : numéro aléatoire
+     * @param lab   : le labyrinthe courant
      * @param color : la couleur du fantôme à créer
      * @return : un fantôme créé à une position aléatoire, de la couleur souhaitée
      */
@@ -220,8 +223,8 @@ public class Characters {
 
             if (isValidPosition(lab, x, y)) {
                 return new Ghosts(
-                        x * Cell.SIZE + Cell.SIZE /2,
-                        y * Cell.SIZE + Cell.SIZE /2,
+                        x * Cell.SIZE + Cell.SIZE / 2,
+                        y * Cell.SIZE + Cell.SIZE / 2,
                         lab,
                         getGhostImage(color, Direction.LEFT),
                         color
@@ -232,11 +235,12 @@ public class Characters {
 
     /**
      * Vérifie si la position de départ est valide pour un personnage
+     *
      * @param lab : Le labyrinthe de différence
-     * @param x : position x
-     * @param y : position y
+     * @param x   : position x
+     * @param y   : position y
      * @return : true si la position du personnage est valide
-     *         : false sinon
+     * : false sinon
      */
     private boolean isValidPosition(Labyrinth lab, int x, int y) {
         // 1. La cellule doit être un chemin
@@ -280,6 +284,7 @@ public class Characters {
 
     /**
      * Initialisation de Pacman
+     *
      * @param lab : le labyrinthe courant
      */
     public void initPacmanPosition(Labyrinth lab) {
@@ -293,8 +298,8 @@ public class Characters {
             if (isValidPosition(lab, x, y)) {
                 // Créer Pacman au centre de la cellule
                 this.pacman = new Pacman(
-                        x * Cell.SIZE + Cell.SIZE /2,
-                        y * Cell.SIZE + Cell.SIZE /2,
+                        x * Cell.SIZE + Cell.SIZE / 2,
+                        y * Cell.SIZE + Cell.SIZE / 2,
                         lab,
                         getPacmanImage(Direction.RIGHT, true),
                         this
@@ -311,6 +316,7 @@ public class Characters {
 
     /**
      * Fonction qui permet de récupérer le fantôme numéro i
+     *
      * @param i : l'indice du fantôme qu'on veut retrouver
      * @return : le fantôme à l'indice i
      */
@@ -320,6 +326,7 @@ public class Characters {
 
     /**
      * Fonction qui retourne la liste de tous les fantômes
+     *
      * @return : la liste de tous les fantômes
      */
     public List<Ghosts> getGhosts() {
@@ -328,12 +335,12 @@ public class Characters {
 
     /**
      * Fonction qui retourne Pacman
+     *
      * @return : Pacman
      */
-    public Pacman getPacman(){
+    public Pacman getPacman() {
         return pacman;
     }
-
 
 
 }

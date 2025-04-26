@@ -16,8 +16,8 @@ public class Cell {
 
     //TODO voir à quoi sert first screen et fraise
 
-    public Cell(){
-        this.firstScreen= Toolkit.getDefaultToolkit().getImage("images/firstScreen.jpg");
+    public Cell() {
+        this.firstScreen = Toolkit.getDefaultToolkit().getImage("images/firstScreen.jpg");
         this.fraise = Toolkit.getDefaultToolkit().getImage("images/point.jpg");
         this.cellstate = true;
     }
@@ -29,16 +29,15 @@ public class Cell {
      * @param y
      * @param im
      */
-    public void drawI(Graphics g, int x, int y, ImageObserver im){
-        g.drawImage(fraise, x* SIZE +25,y* SIZE +25,8,8,im);
+    public void drawI(Graphics g, int x, int y, ImageObserver im) {
+        g.drawImage(fraise, x * SIZE + 25, y * SIZE + 25, 8, 8, im);
     }
 
     /**
-     *
      * @param type
      */
-    public void setCellVal(CellType type){
+    public void setCellVal(CellType type) {
         cellval = type.getValue();
     }
-  
+
 }

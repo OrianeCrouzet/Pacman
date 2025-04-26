@@ -6,15 +6,14 @@ import components.Direction;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
-import display.MainContainer;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.*;
 
 public class Labyrinth extends JPanel {
 

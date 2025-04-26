@@ -4,7 +4,6 @@ import display.MainContainer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.net.URL;
 
 public class MainMenu extends JPanel {
