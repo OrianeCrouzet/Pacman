@@ -22,7 +22,7 @@ public class Pacman {
 
     private int score = 0;
 
-    private int lives = 1;
+    private int lives = 3;
     private final Labyrinth lab;
     private Direction direction;
     private Image img;
