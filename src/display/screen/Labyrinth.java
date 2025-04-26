@@ -14,32 +14,92 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+import static Util.FileHandler.readFile;
+import static Util.FileHandler.streamStringToIntDoubleArray;
 
 public class Labyrinth extends JPanel {
-
-    public Characters personnages = new Characters();
-
-
-    public static final int ROWS = 20, COLS = 20;
-    public static final int SCREEN_WIDTH = Labyrinth.COLS * Cell.SIZE + 16;
-    public static final int SCREEN_HEIGHT = Labyrinth.COLS * Cell.SIZE + 16;
 
     private static final int CELL_SIZE = CellType.SIZE.getValue();
     private static final int DOT_SIZE = 6;
     private static final int DOT_OFFSET = CELL_SIZE / 2 - 3;
-
-    public Cell[][] maze = new Cell[ROWS][COLS];
+    public Characters personnages = new Characters();
+    public int rows = 0, cols = 0;
+    public int SCREEN_WIDTH;
+    public int SCREEN_HEIGHT;
+    public Cell[][] maze;
 
     private List<Edge> edges = new ArrayList<>();
-    private UnionFind uf = new UnionFind(ROWS * COLS);
+    private UnionFind uf;
+
 
     public Labyrinth() {
-        emptyMaze();
+
         //TODO déplacer dans un handler mais conflit de fenêtre
 
         setupListener();
         this.setFocusable(true);
         this.requestFocusInWindow();
+    }
+
+    private void setSCREEN() {
+        SCREEN_WIDTH = cols * Cell.SIZE + 16;
+        SCREEN_HEIGHT = rows * Cell.SIZE + 16;
+    }
+
+
+    public void chooseMaze(boolean random) {
+        if (random) {
+            rows = 31;
+            cols = 28;
+            emptyMaze();
+            setSCREEN();
+            generateMaze();
+        } else {
+            rows = 31;
+            cols = 28;
+            emptyMaze();
+            setSCREEN();
+            classicalMaze();
+        }
+    }
+
+
+    private void classicalMaze() {
+        String classicMapPath = "map/classicMap.txt";
+        initCustomMaze(streamStringToIntDoubleArray(Objects.requireNonNull(readFile(classicMapPath))));
+        int[] pacman = {13, 23};
+        int[][] ghosts = {{13, 11}, {9, 14}, {16, 17}, {16, 11}};
+
+        putCharacters(pacman, ghosts);
+    }
+
+    private void putCharacters(int[] pacman, int[][] ghosts) {
+        personnages.putPacman(this, pacman[0], pacman[1], Direction.LEFT);
+        personnages.initGhostsPositions(this, ghosts);
+    }
+
+    private void initCustomMaze(int[][] mapInt) {
+        for (int c = 0; c < mapInt.length; c++) {
+            for (int r = 0; r < mapInt[c].length; r++) {
+                intToCell(mapInt[c][r], maze[r][c]);
+            }
+        }
+    }
+
+
+    private void intToCell(int value, Cell cell) {
+        switch (value) {
+            case 0 -> cell.setCellVal(CellType.WALL);
+            case 1 -> cell.setCellVal(CellType.POINT);
+            case 2 -> cell.setCellVal(CellType.EMPTY);
+            case 3 -> cell.setCellVal(CellType.POINT); //Super Dot
+            case 4 -> cell.setCellVal(CellType.EMPTY); //SpawnPoint
+            case 5 -> cell.setCellVal(CellType.WALL); //SecretPass
+            case 9 -> cell.setCellVal(CellType.EMPTY); //FantomSpawn
+            default -> throw new IllegalStateException("Unexpected value: " + value);
+        }
     }
 
 
@@ -48,7 +108,7 @@ public class Labyrinth extends JPanel {
      */
     public void initialiseCharactersInMaze() {
         personnages.initPacmanPosition(this);
-        personnages.initGhostsRandomPositions(this);
+        personnages.initGhostsPositions(this, null);
     }
 
     /*Set cell state */
@@ -96,7 +156,7 @@ public class Labyrinth extends JPanel {
     /**
      * Algorithme pour générer un labyrinthe avec Kruskal
      */
-    public void generateMaze() {
+    private void generateMaze() {
         generateAllPossibleWalls();
         shuffleEdges();
         createMazePaths();
@@ -106,10 +166,7 @@ public class Labyrinth extends JPanel {
         initialiseCharactersInMaze();
     }
 
-    public void emptyMaze() {
-        for (int x = 0; x < ROWS; x++) {
-            for (int y = 0; y < COLS; y++) {
-                maze[x][y] = new Cell();
+    private void emptyMaze() {
         maze = new Cell[cols][rows];
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
@@ -145,6 +202,11 @@ public class Labyrinth extends JPanel {
      * Fonction qui crée les chemins principaux avec Kruskal
      */
     private void createMazePaths() {
+        if (cols>rows){
+            uf = new UnionFind(cols * cols);
+        }else {
+            uf = new UnionFind(rows * rows);
+        }
         for (Edge edge : edges) {
             int root1 = uf.find(edge.node1);
             int root2 = uf.find(edge.node2);
@@ -250,7 +312,6 @@ public class Labyrinth extends JPanel {
             }
         }
     }
-
     /**
      * Classe représentant une arête
      */

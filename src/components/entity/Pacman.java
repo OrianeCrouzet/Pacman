@@ -38,7 +38,7 @@ public class Pacman {
         this.r = ((r / Cell.SIZE) * Cell.SIZE) + (Cell.SIZE / 2) - (PACMAN_SIZE / 2);
         this.img = pacmanImage;
 
-        this.direction = Direction.RIGHT;
+        this.direction = direction;
         this.mouthOpen = true;
         this.characters = characters;
 

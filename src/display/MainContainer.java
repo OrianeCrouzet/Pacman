@@ -20,6 +20,8 @@ public class MainContainer extends JFrame {
 
     private GamePanel gamePanel;
 
+    public boolean random;
+
     enum GameState {MENU, RUNNING, GAME_OVER}
 
     public MainContainer() {
@@ -59,9 +61,10 @@ public class MainContainer extends JFrame {
         cardLayout.show(container, GameState.MENU.name());
     }
 
-    public void startGame() {
-        setWindow(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
+    public void startGame(boolean random) {
+        this.random = random;
         initializeGame();
+        setWindow(labyrinthPanel.SCREEN_WIDTH, labyrinthPanel.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
 
         cardLayout.show(container, GameState.RUNNING.name());
     }
@@ -79,7 +82,7 @@ public class MainContainer extends JFrame {
      */
     private void initializeGame() {
         gameState = GameState.RUNNING;
-        labyrinthPanel.generateMaze();
+        labyrinthPanel.chooseMaze(random);
         setupGameLoop();
         gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
     }
@@ -111,7 +114,7 @@ public class MainContainer extends JFrame {
             respawnTimer--;
             if (respawnTimer == 0) {
                 pacman.respawn();
-                labyrinthPanel.getPersonnages().initGhostsRandomPositions(labyrinthPanel);
+                labyrinthPanel.getPersonnages().initGhostsPositions(labyrinthPanel,null);
             }
             labyrinthPanel.repaint();
             return;

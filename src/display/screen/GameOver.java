@@ -40,7 +40,7 @@ public class GameOver extends JPanel {
         retryButton.setPreferredSize(buttonSize);
         quitButton.setPreferredSize(buttonSize);
 
-        retryButton.addActionListener(e -> mainFrame.startGame());
+        retryButton.addActionListener(e -> mainFrame.startGame(mainFrame.random));
         quitButton.addActionListener(e -> mainFrame.dispose());
 
         buttonPanel.add(retryButton);

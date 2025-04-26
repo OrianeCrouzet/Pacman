@@ -189,7 +189,7 @@ public class Characters {
      *
      * @param lab : le labyrinthe courant
      */
-    public void initGhostsRandomPositions(Labyrinth lab) {
+    public void initGhostsPositions(Labyrinth lab,int[][] abs) {
         ghosts.clear();
         GhostColor[] allColors = GhostColor.values();
 
@@ -198,7 +198,14 @@ public class Characters {
         //Fantômes basiques
         for (int i = 0; i < lastIndex; i++) {
             GhostColor color = allColors[i];
-            Ghosts ghost = createGhostAtRandomPosition(rand, lab, color);
+            int[] pos = new int[2];
+            if (abs == null){
+                pos = createGhostAtRandomPosition(lab, color);
+            }else {
+                pos[0] = abs[i][0];
+                pos[1] = abs[i][1];
+            }
+            Ghosts ghost = putGhost(lab, pos[0], pos[1], color);
             ghosts.add(ghost);
             System.out.println("Ghost " + color + " créé à (" + ghost.c + "," + ghost.r + ")");
         }
@@ -218,8 +225,7 @@ public class Characters {
      * @param color : la couleur du fantôme à créer
      * @return : un fantôme créé à une position aléatoire, de la couleur souhaitée
      */
-    private Ghosts createGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
-    (Labyrinth lab, GhostColor color) {
+    private int[] createGhostAtRandomPosition(Labyrinth lab, GhostColor color) {
         while (true) {
             int c = rand.nextInt(lab.cols);
             int r = rand.nextInt(lab.rows);
@@ -303,18 +309,22 @@ public class Characters {
 
             if (isValidPosition(lab, c, r)) {
                 // Créer Pacman au centre de la cellule
-                this.pacman = new Pacman(
-                        x * Cell.SIZE + Cell.SIZE / 2,
-                        y * Cell.SIZE + Cell.SIZE / 2,
-                        lab,
-                        getPacmanImage(Direction.RIGHT, true),
-                        this
-                );
-
-                System.out.println("Pacman initialisé en (" + x + "," + y + ")");
+                putPacman(lab, c, r,Direction.RIGHT);
                 return;
             }
         }
+    }
+
+    public void putPacman(Labyrinth lab,int c,int r,Direction direction){
+        this.pacman = new Pacman(
+                c * Cell.SIZE + Cell.SIZE / 2,
+                r * Cell.SIZE + Cell.SIZE / 2,
+                lab,
+                getPacmanImage(direction, true),
+                this,
+                direction
+        );
+        System.out.println("Pacman initialisé en (" + c + "," + r + ")");
     }
 
 
