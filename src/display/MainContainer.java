@@ -19,7 +19,9 @@ public class MainContainer extends JFrame {
 
     private GamePanel gamePanel;
 
-    enum GameState {MENU, RUNNING, GAME_OVER}
+    enum GameState {
+        MENU, RUNNING, GAME_OVER, WIN
+    }
 
     public MainContainer() {
         super("Pacman Game");

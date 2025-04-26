@@ -34,6 +34,8 @@ public class Labyrinth extends JPanel {
     private List<Edge> edges = new ArrayList<>();
     private UnionFind uf = new UnionFind(ROWS * COLS);
 
+    private int dotLeft;
+
     public Labyrinth() {
         emptyMaze();
         //TODO déplacer dans un handler mais conflit de fenêtre
@@ -106,6 +108,28 @@ public class Labyrinth extends JPanel {
         fixCenterCases();
         initialiseCharactersInMaze();
     }
+
+    public void printMaze() {
+        for (int i = 0; i < ROWS; i++) {
+            for (int j = 0; j < COLS; j++) {
+                System.out.print(" " + maze[j][i] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void seeDotLeft() {
+        dotLeft = 0;
+        for (Cell[] i : maze) {
+            for (Cell j : i) {
+                if (j.cellval == 1) {
+                    dotLeft++;
+                }
+            }
+        }
+        System.out.println(dotLeft);
+    }
+
 
     public void emptyMaze() {
         for (int x = 0; x < ROWS; x++) {
@@ -390,5 +414,10 @@ public class Labyrinth extends JPanel {
         emptyMaze();
         edges = new ArrayList<>();
         uf = new UnionFind(ROWS * COLS);
+    }
+
+
+    public int getDotLeft() {
+        return dotLeft;
     }
 }
