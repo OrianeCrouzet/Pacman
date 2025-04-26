@@ -40,9 +40,13 @@ public class MainContainer extends JFrame {
         gamePanel = new GamePanel(labyrinthPanel);
         container.add(gamePanel, GameState.RUNNING.name());
 
-        // GAME OVER Screen
-        GameOver gameOver = new GameOver(this);
-        container.add(gameOver, GameState.GAME_OVER.name());
+        // End Game Screen
+        EndGameScreen gameOverScreen = new EndGameScreen(this, false);
+        container.add(gameOverScreen, GameState.GAME_OVER.name());
+
+        EndGameScreen winningScreen = new EndGameScreen(this, true);
+        container.add(winningScreen, GameState.WIN.name());
+
 
         gameTimer = null;
 
@@ -64,11 +68,14 @@ public class MainContainer extends JFrame {
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
-    public void gameOver() {
-        setSize(1300, 1000);
-        cardLayout.show(container, GameState.GAME_OVER.name());
+    public void endGame(boolean win) {
         labyrinthPanel.reset();
         gameTimer.stop();
+        if (win) {
+            cardLayout.show(container, GameState.WIN.name());
+        } else {
+            cardLayout.show(container, GameState.GAME_OVER.name());
+        }
     }
 
 
@@ -126,12 +133,18 @@ public class MainContainer extends JFrame {
                 respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
             } else {
                 System.out.println("Game Over!");
-                gameState = GameState.GAME_OVER;
-                gameOver();
+                endGame(false);
             }
         }
 
-        // 5. Rafraîchissement
+        // 5. Recompte le nombre de dotLeft
+
+        labyrinthPanel.seeDotLeft();
+        if (labyrinthPanel.getDotLeft() == 0) {
+            endGame(true);
+        }
+
+        // 6. Rafraîchissement
         labyrinthPanel.repaint();
         gamePanel.updateHUD();
     }
