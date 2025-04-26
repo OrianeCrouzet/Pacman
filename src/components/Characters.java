@@ -16,6 +16,9 @@ public class Characters {
 
     public enum GhostColor {RED, BLUE, YELLOW}
 
+    public static final Random rand = new Random();
+
+
     /**
      * Sprites des fantômes ordonnés par couleur
      */
@@ -217,6 +220,7 @@ public class Characters {
      * @return : un fantôme créé à une position aléatoire, de la couleur souhaitée
      */
     private Ghosts createGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
+    (Labyrinth lab, GhostColor color) {
         while (true) {
             int x = rand.nextInt(Labyrinth.COLS);
             int y = rand.nextInt(Labyrinth.ROWS);
@@ -288,7 +292,6 @@ public class Characters {
      * @param lab : le labyrinthe courant
      */
     public void initPacmanPosition(Labyrinth lab) {
-        Random rand = new Random();
 
         // Trouver une position valide
         while (true) {
