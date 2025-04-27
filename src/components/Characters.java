@@ -4,13 +4,12 @@ import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.Labyrinth;
-
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.util.List;
 import java.util.*;
+import java.util.List;
+import javax.imageio.ImageIO;
 
 public class Characters {
 
@@ -86,7 +85,7 @@ public class Characters {
      * @return : l'image chargée depuis les sources
      */
     private Image loadGhostImage(String path) {
-        try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
+        try (InputStream is = getClass().getResourceAsStream("../ressources/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
                     img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -153,7 +152,7 @@ public class Characters {
      * @return : l'image chargée depuis les sources
      */
     private Image loadPacmanImage(String path) {
-        try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
+        try (InputStream is = getClass().getResourceAsStream("../ressources/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
                     img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);

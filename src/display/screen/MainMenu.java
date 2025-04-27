@@ -1,10 +1,9 @@
 package display.screen;
 
 import display.MainContainer;
-
-import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import javax.swing.*;
 
 public class MainMenu extends JPanel {
 
@@ -16,7 +15,7 @@ public class MainMenu extends JPanel {
         setLayout(new BorderLayout());
 
         // Image de fond
-        URL imgUrl = getClass().getClassLoader().getResource("images/firstScreen.jpg");
+        URL imgUrl = getClass().getClassLoader().getResource("ressources/images/firstScreen.jpg");
         if (imgUrl == null) {
             System.err.println("Image non trouvée !");
         } else {

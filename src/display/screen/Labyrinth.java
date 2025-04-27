@@ -1,13 +1,13 @@
 package display.screen;
 
+import static Util.FileHandler.readFile;
+import static Util.FileHandler.streamStringToIntDoubleArray;
 import components.CellType;
 import components.Characters;
 import components.Direction;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
-
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import static Util.FileHandler.readFile;
-import static Util.FileHandler.streamStringToIntDoubleArray;
+import javax.swing.*;
 
 public class Labyrinth extends JPanel {
 
@@ -53,13 +51,13 @@ public class Labyrinth extends JPanel {
 
     public void chooseMaze(boolean random) {
         if (random) {
-            rows = 31;
+            rows = 18;
             cols = 28;
             emptyMaze();
             setSCREEN();
             generateMaze();
         } else {
-            rows = 31;
+            rows = 18;
             cols = 28;
             emptyMaze();
             setSCREEN();

@@ -1,11 +1,10 @@
 package display.screen;
 
 import display.MainContainer;
-
-import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.swing.*;
 
 public class EndGameScreen extends JPanel {
 
@@ -26,7 +25,7 @@ public class EndGameScreen extends JPanel {
 
         // Charger la police une seule fois
         try {
-            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("font/PressStart2P-Regular.ttf");
+            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("ressources/font/PressStart2P-Regular.ttf");
             if (fontStream == null) throw new IOException("Fichier de police non trouvé");
             pixelFont = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(40f);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(pixelFont);
