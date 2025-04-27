@@ -6,8 +6,6 @@ import components.Direction;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
-import display.MainContainer;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
