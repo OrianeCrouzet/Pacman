@@ -8,5 +8,6 @@
 /dataSources.local.xml
 /.idea
 /out
-/bin
 /.vscode
+.class
+/bin
