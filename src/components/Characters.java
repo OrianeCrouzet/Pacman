@@ -3,6 +3,7 @@ package components;
 import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
+import components.entity.SpecialGhost;
 import display.screen.Labyrinth;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -209,11 +210,11 @@ public class Characters {
             System.out.println("Ghost " + color + " créé à (" + ghost.c + "," + ghost.r + ")");
         }
 
-/*        //Fantôme spécial
+        //Fantôme spécial
         GhostColor color = allColors[lastIndex];
         SpecialGhost specialGhost = createSpecialGhostAtRandomPosition(rand, lab, color);
         ghosts.add(specialGhost);
-        System.out.println("Ghost " + color + " créé à (" + specialGhost.c + "," + specialGhost.r + ")");*/
+        System.out.println("Ghost " + color + " créé à (" + specialGhost.c + "," + specialGhost.r + ")");
 
     }
 
@@ -273,12 +274,12 @@ public class Characters {
         return true;
     }
 
-    /*    *//************************************** CREATION DU FANTÔME SPECIAL ***********************************************//*
+    //************************************** CREATION DU FANTÔME SPECIAL ***********************************************//*
 
     private SpecialGhost createSpecialGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
         while (true) {
-            int x = rand.nextInt(Labyrinth.COLS);
-            int y = rand.nextInt(Labyrinth.ROWS);
+            int x = rand.nextInt(lab.cols);
+            int y = rand.nextInt(lab.rows);
 
             if (isValidPosition(lab, x, y)) {
                 return new SpecialGhost(
@@ -292,7 +293,7 @@ public class Characters {
         }
     }
 
- */   /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
+      /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
 
     /**
      * Initialisation de Pacman
