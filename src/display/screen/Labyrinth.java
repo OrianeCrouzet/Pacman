@@ -57,7 +57,7 @@ public class Labyrinth extends JPanel {
             setSCREEN();
             generateMaze();
         } else {
-            rows = 18;
+            rows = 31;
             cols = 28;
             emptyMaze();
             setSCREEN();
@@ -67,7 +67,7 @@ public class Labyrinth extends JPanel {
 
 
     private void classicalMaze() {
-        String classicMapPath = "map/classicMap.txt";
+        String classicMapPath = "ressources/map/classicMap.txt";
         initCustomMaze(streamStringToIntDoubleArray(Objects.requireNonNull(readFile(classicMapPath))));
         int[] pacman = {13, 23};
         int[][] ghosts = {{13, 11}, {9, 14}, {16, 17}, {16, 11}};

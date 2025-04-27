@@ -187,8 +187,8 @@ public class SpecialGhost extends Ghosts{
         return x >= 0 && x < lab.cols && y >= 0 && y < lab.rows;
     }
     
-    private boolean isWall(int x, int y) {
-        return lab.maze[y][x].cellval == CellType.WALL.getValue();
+    private boolean isWall(int c, int r) {
+        return lab.maze[c][r].cellval == CellType.WALL.getValue();
     }
 
     /**

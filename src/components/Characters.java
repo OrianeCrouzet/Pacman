@@ -193,7 +193,7 @@ public class Characters {
         ghosts.clear();
         GhostColor[] allColors = GhostColor.values();
 
-        int lastIndex = allColors.length;
+        int lastIndex = allColors.length - 1;
 
         //Fantômes basiques
         for (int i = 0; i < lastIndex; i++) {
