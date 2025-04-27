@@ -34,21 +34,29 @@ public class Labyrinth extends JPanel {
 
     private int dotLeft;
 
+    /**
+     * Constructeur de Labyrinth.
+     * Initialise les écouteurs clavier pour contrôler Pacman et demande le focus sur la fenêtre.
+     */
     public Labyrinth() {
-
-        //TODO déplacer dans un handler mais conflit de fenêtre
-
         setupListener();
         this.setFocusable(true);
         this.requestFocusInWindow();
     }
 
+    /**
+     * Calcule et définit la taille de l'écran en fonction du nombre de colonnes et lignes du labyrinthe.
+     */
     private void setSCREEN() {
         SCREEN_WIDTH = cols * Cell.SIZE + 16;
         SCREEN_HEIGHT = rows * Cell.SIZE + 16;
     }
 
-
+    /**
+     * Choisit et génère un labyrinthe, soit aléatoire soit classique.
+     *
+     * @param random true pour un labyrinthe aléatoire, false pour le labyrinthe classique
+     */
     public void chooseMaze(boolean random) {
         if (random) {
             rows = 18;
@@ -65,21 +73,33 @@ public class Labyrinth extends JPanel {
         }
     }
 
-
+    /**
+     * Charge et initialise le labyrinthe classique à partir d'un fichier texte.
+     */
     public void classicalMaze() {
         String classicMapPath = "ressources/map/classicMap.txt";
         initCustomMaze(streamStringToIntDoubleArray(Objects.requireNonNull(readFile(classicMapPath))));
         int[] pacman = {13, 23};
         int[][] ghosts = {{13, 11}, {9, 14}, {16, 17}, {16, 11}};
-
         putCharacters(pacman, ghosts);
     }
 
+    /**
+     * Place Pacman et les fantômes dans le labyrinthe aux positions spécifiées.
+     *
+     * @param pacman position initiale de Pacman (ligne, colonne)
+     * @param ghosts positions initiales des fantômes
+     */
     private void putCharacters(int[] pacman, int[][] ghosts) {
         personnages.putPacman(this, pacman[0], pacman[1], Direction.LEFT);
         personnages.initGhostsPositions(this, ghosts);
     }
 
+    /**
+     * Initialise le labyrinthe personnalisé à partir d'un tableau d'entiers.
+     *
+     * @param mapInt représentation du labyrinthe sous forme de tableau d'entiers
+     */
     private void initCustomMaze(int[][] mapInt) {
         for (int c = 0; c < mapInt.length; c++) {
             for (int r = 0; r < mapInt[c].length; r++) {
@@ -88,33 +108,35 @@ public class Labyrinth extends JPanel {
         }
     }
 
-
+    /**
+     * Convertit un entier représentant un type de cellule en un objet Cell correspondant.
+     *
+     * @param value valeur entière représentant un type de cellule
+     * @param cell cellule du labyrinthe à mettre à jour
+     */
     private void intToCell(int value, Cell cell) {
         switch (value) {
             case 0 -> cell.setCellVal(CellType.WALL);
             case 1 -> cell.setCellVal(CellType.POINT);
             case 2 -> cell.setCellVal(CellType.EMPTY);
-            case 3 -> cell.setCellVal(CellType.POINT); //Super Dot
-            case 4 -> cell.setCellVal(CellType.EMPTY); //SpawnPoint
-            case 5 -> cell.setCellVal(CellType.WALL); //SecretPass
-            case 9 -> cell.setCellVal(CellType.EMPTY); //FantomSpawn
+            case 3 -> cell.setCellVal(CellType.POINT); // Super Dot
+            case 4 -> cell.setCellVal(CellType.EMPTY); // Spawn Point
+            case 5 -> cell.setCellVal(CellType.WALL); // Secret Passage
+            case 9 -> cell.setCellVal(CellType.EMPTY); // Ghost Spawn
             default -> throw new IllegalStateException("Unexpected value: " + value);
         }
     }
 
-
     /**
-     *
+     * Initialise les positions de Pacman et des fantômes après la création du labyrinthe.
      */
     public void initialiseCharactersInMaze() {
         personnages.initPacmanPosition(this);
         personnages.initGhostsPositions(this, null);
     }
 
-    /*Set cell state */
-
     /**
-     *
+     * Configure les touches du clavier pour déplacer Pacman dans le labyrinthe.
      */
     public void setupListener() {
         InputMap im = this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -124,7 +146,6 @@ public class Labyrinth extends JPanel {
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0), "moveLeft");
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_D, 0), "moveRight");
         im.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "moveDown");
-
 
         am.put("moveUp", new AbstractAction() {
             @Override
@@ -150,11 +171,10 @@ public class Labyrinth extends JPanel {
                 personnages.getPacman().handleInput(Direction.DOWN);
             }
         });
-
     }
 
     /**
-     * Algorithme pour générer un labyrinthe avec Kruskal
+     * Génère un labyrinthe aléatoire en utilisant l'algorithme de Kruskal.
      */
     private void generateMaze() {
         generateAllPossibleWalls();
@@ -165,6 +185,10 @@ public class Labyrinth extends JPanel {
         fixCenterCases();
         initialiseCharactersInMaze();
     }
+
+    /**
+     * Affiche la représentation du labyrinthe dans la console pour du débogage.
+     */
     public void printMaze() {
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
@@ -174,6 +198,9 @@ public class Labyrinth extends JPanel {
         }
     }
 
+    /**
+     * Compte le nombre de points (dots) encore présents dans le labyrinthe.
+     */
     public void checkDotLeft() {
         dotLeft = 0;
         for (Cell[] c : maze) {
@@ -184,7 +211,10 @@ public class Labyrinth extends JPanel {
             }
         }
     }
-    
+
+    /**
+     * Initialise un labyrinthe vide avec uniquement des cellules par défaut.
+     */
     private void emptyMaze() {
         maze = new Cell[cols][rows];
         for (int c = 0; c < cols; c++) {
@@ -193,6 +223,7 @@ public class Labyrinth extends JPanel {
             }
         }
     }
+
 
     /**
      * Fonction qui génère toutes les parois possibles entre cellules voisines
@@ -301,12 +332,12 @@ public class Labyrinth extends JPanel {
     }
 
     /**
-     * Fonction qui corrige les bords des cellules
+     * Corrige les bords du labyrinthe en transformant un mur adjacent en point si nécessaire.
      *
-     * @param c
-     * @param r
-     * @param adjC
-     * @param adjR
+     * @param c colonne de la cellule actuelle
+     * @param r ligne de la cellule actuelle
+     * @param adjC colonne de la cellule adjacente
+     * @param adjR ligne de la cellule adjacente
      */
     private void fixBorderCell(int c, int r, int adjC, int adjR) {
         if (maze[c][r].cellval == CellType.POINT.getValue() &&
@@ -315,8 +346,12 @@ public class Labyrinth extends JPanel {
         }
     }
 
+
     /**
-     * Fonction qui corrige les cas du centre
+     * Corrige les cas particuliers au centre du labyrinthe.
+     * 
+     * Transforme un mur adjacent en point si une cellule est entourée de murs
+     * de toutes parts (haut, bas, gauche, droite).
      */
     private void fixCenterCases() {
         for (int c = 1; c < cols - 1; c++) {
@@ -331,24 +366,44 @@ public class Labyrinth extends JPanel {
             }
         }
     }
+
+
+
     /**
-     * Classe représentant une arête
+     * Classe représentant une arête entre deux cellules dans le labyrinthe.
+     *
+     * Utilisée pour l'algorithme de génération du labyrinthe (Kruskal).
      */
     private static class Edge {
         int node1, node2;
 
+        /**
+         * Constructeur d'une arête reliant deux cellules.
+         *
+         * @param node1 première cellule (index)
+         * @param node2 deuxième cellule (index)
+         */
         Edge(int node1, int node2) {
             this.node1 = node1;
             this.node2 = node2;
         }
     }
 
+
     /**
-     * Union-Find (Disjoint-Set) pour Kruskal
+     * Union-Find (Disjoint-Set) pour l'algorithme de Kruskal.
+     *
+     * Permet de gérer les ensembles disjoints et de vérifier si deux cellules
+     * sont connectées dans le labyrinthe.
      */
     private static class UnionFind {
         private final int[] parent;
 
+        /**
+         * Initialise une structure Union-Find avec un nombre donné d'éléments.
+         *
+         * @param size nombre d'éléments à gérer
+         */
         public UnionFind(int size) {
             parent = new int[size];
             for (int c = 0; c < size; c++) {
@@ -356,6 +411,13 @@ public class Labyrinth extends JPanel {
             }
         }
 
+        /**
+         * Trouve le représentant (racine) de l'ensemble auquel appartient un élément.
+         * Utilise la compression de chemin pour accélérer les recherches.
+         *
+         * @param c élément dont on cherche la racine
+         * @return racine de l'élément
+         */
         public int find(int c) {
             if (parent[c] != c) {
                 parent[c] = find(parent[c]);  // Compression de chemin
@@ -363,6 +425,12 @@ public class Labyrinth extends JPanel {
             return parent[c];
         }
 
+        /**
+         * Fusionne deux ensembles contenant chacun un des éléments donnés.
+         *
+         * @param c premier élément
+         * @param r second élément
+         */
         public void union(int c, int r) {
             int rootC = find(c);
             int rootR = find(r);
@@ -373,8 +441,11 @@ public class Labyrinth extends JPanel {
     }
 
 
+
     /**
+     * Dessine le labyrinthe, les points, les fantômes et Pacman sur le panneau.
      *
+     * @param g l'objet Graphics utilisé pour dessiner
      */
     @Override
     protected void paintComponent(Graphics g) {
@@ -421,39 +492,41 @@ public class Labyrinth extends JPanel {
                             null);
                 }
             }
-
-            // Dessin de Pacman
-            Pacman pacman = personnages.getPacman();
-            if (pacman != null) {
-                int drawC = pacman.c + (CellType.SIZE.getValue() - Pacman.PACMAN_WIDTH) / 2;
-                int drawR = pacman.r + (CellType.SIZE.getValue() - Pacman.PACMAN_HEIGHT) / 2;
-
-                Image pacmanImage = personnages.getPacmanImage(
-                        pacman.getDirection(),
-                        pacman.getMouthOpening()
-                );
-
-                if (pacmanImage != null) {
-                    g.drawImage(pacmanImage,
-                            drawC, drawR,
-                            Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT,
-                            null);
-                }
-            }
         }
 
+        // Dessin de Pacman
+        Pacman pacman = personnages.getPacman();
+        if (pacman != null) {
+            int drawC = pacman.c + (CellType.SIZE.getValue() - Pacman.PACMAN_WIDTH) / 2;
+            int drawR = pacman.r + (CellType.SIZE.getValue() - Pacman.PACMAN_HEIGHT) / 2;
+
+            Image pacmanImage = personnages.getPacmanImage(
+                    pacman.getDirection(),
+                    pacman.getMouthOpening()
+            );
+
+            if (pacmanImage != null) {
+                g.drawImage(pacmanImage,
+                        drawC, drawR,
+                        Pacman.PACMAN_WIDTH, Pacman.PACMAN_HEIGHT,
+                        null);
+            }
+        }
     }
 
-
     /**
-     * @return
+     * Retourne l'objet Characters qui contient Pacman et les fantômes.
+     *
+     * @return l'objet Characters utilisé dans le labyrinthe
      */
     public Characters getPersonnages() {
         return personnages;
     }
 
     /**
-     * @return :
+     * Retourne la largeur totale du labyrinthe en pixels.
+     *
+     * @return largeur du labyrinthe
      */
     @Override
     public int getWidth() {
@@ -461,13 +534,19 @@ public class Labyrinth extends JPanel {
     }
 
     /**
-     * @return :
+     * Retourne la hauteur totale du labyrinthe en pixels.
+     *
+     * @return hauteur du labyrinthe
      */
     @Override
     public int getHeight() {
         return rows * CELL_SIZE;
     }
 
+    /**
+     * Réinitialise entièrement le labyrinthe et les personnages.
+     * Crée un nouveau tableau vide et un nouvel ensemble d'arêtes.
+     */
     public void reset() {
         personnages = new Characters();
         emptyMaze();
@@ -475,6 +554,9 @@ public class Labyrinth extends JPanel {
         uf = new UnionFind(rows * cols);
     }
 
+    /**
+     * Replace un point s'il est manquant sur la cellule.
+     */
     public void replaceDot(){
         for (int c = 0; c < cols; c++) {
             for (int r = 0; r < rows; r++) {
@@ -486,9 +568,14 @@ public class Labyrinth extends JPanel {
         }
     }
 
-
+    /**
+     * Calcule et retourne le nombre de points (dots) restants dans le labyrinthe.
+     *
+     * @return nombre de points restants
+     */
     public int getDotLeft() {
         checkDotLeft();
         return dotLeft;
     }
+
 }

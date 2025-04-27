@@ -1,5 +1,15 @@
 package components;
 
+/**
+ * L'énumération Direction représente les quatre directions cardinales utilisées dans le jeu.
+ * Chaque direction est associée à :
+ * - Un code caractère pour la représentation textuelle
+ * - Des méthodes pour obtenir les déplacements (dx, dy) correspondants
+ * - Une méthode pour obtenir la direction opposée
+ * 
+ * Cette énumération est utilisée pour gérer le déplacement des personnages (Pacman et fantômes)
+ * et l'orientation des sprites graphiques.
+ */
 public enum Direction {
     LEFT('L'),
     RIGHT('R'),
