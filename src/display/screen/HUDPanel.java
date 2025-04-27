@@ -4,10 +4,8 @@ import components.entity.Pacman;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 
 public class HUDPanel extends JPanel {
 
@@ -21,7 +19,7 @@ public class HUDPanel extends JPanel {
         setForeground(Color.WHITE);
     }
 
-    public void setPacman(Pacman pacman){
+    public void setPacman(Pacman pacman) {
         this.pacman = pacman;
     }
 
@@ -52,11 +50,11 @@ public class HUDPanel extends JPanel {
 
         // Dessiner les textes
         g.drawString("HIGH SCORE: ", 100, 40);
-        g.drawString(String.valueOf(pacman.getScore()),100,70);
+        g.drawString(String.valueOf(pacman.getScore()), 100, 70);
         g.drawString("Vies: " + pacman.getLives(), 600, 40);
 
         g.setColor(Color.BLUE);
-        g.drawLine(0,75,1000,75);
+        g.drawLine(0, 75, 1000, 75);
     }
 
 

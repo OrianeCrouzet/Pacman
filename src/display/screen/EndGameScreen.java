@@ -48,7 +48,7 @@ public class EndGameScreen extends JPanel {
         restart.setPreferredSize(buttonSize);
         mainMenu.setPreferredSize(buttonSize);
 
-        restart.addActionListener(e -> mainFrame.startGame());
+        restart.addActionListener(e -> mainFrame.startGame(mainFrame.random));
         mainMenu.addActionListener(e -> mainFrame.showMenu());
 
         buttonPanel.add(restart);

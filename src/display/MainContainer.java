@@ -3,8 +3,9 @@ package display;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.*;
-import java.awt.*;
+
 import javax.swing.*;
+import java.awt.*;
 
 public class MainContainer extends JFrame {
 
@@ -19,6 +20,8 @@ public class MainContainer extends JFrame {
 
     private GamePanel gamePanel;
 
+    public boolean random;
+
     enum GameState {
         MENU, RUNNING, GAME_OVER, WIN
     }
@@ -27,8 +30,7 @@ public class MainContainer extends JFrame {
         super("Pacman Game");
         // Initialisation des composants
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(667, 1000);
-        setLocationRelativeTo(null);
+        setWindow(667, 1000);
 
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
@@ -61,16 +63,20 @@ public class MainContainer extends JFrame {
 
 
     public void showMenu() {
+        setWindow(667, 1000);
         cardLayout.show(container, GameState.MENU.name());
     }
 
-    public void startGame() {
+    public void startGame(boolean random) {
+        this.random = random;
         initializeGame();
+        setWindow(labyrinthPanel.SCREEN_WIDTH, labyrinthPanel.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
 
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
     public void endGame(boolean win) {
+        setWindow(1300, 1000);
         labyrinthPanel.reset();
         gameTimer.stop();
         if (win) {
@@ -85,9 +91,8 @@ public class MainContainer extends JFrame {
      *
      */
     private void initializeGame() {
-        setSize(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
         gameState = GameState.RUNNING;
-        labyrinthPanel.generateMaze();
+        labyrinthPanel.chooseMaze(random);
         setupGameLoop();
         gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
     }
@@ -98,6 +103,11 @@ public class MainContainer extends JFrame {
     private void setupGameLoop() {
         gameTimer = new Timer(30, e -> updateGame());
         gameTimer.start();
+    }
+
+    public void setWindow(int width, int height) {
+        setSize(width, height);
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -114,7 +124,7 @@ public class MainContainer extends JFrame {
             respawnTimer--;
             if (respawnTimer == 0) {
                 pacman.respawn();
-                labyrinthPanel.getPersonnages().initGhostsRandomPositions(labyrinthPanel);
+                labyrinthPanel.getPersonnages().initGhostsPositions(labyrinthPanel,null);
             }
             labyrinthPanel.repaint();
             return;
