@@ -93,6 +93,7 @@ public class SpecialGhost extends Ghosts {
     public void move() {
         // 1. Essayer A* vers Pacman
         if (tryAStarMove()) {
+
             return;
         }
         

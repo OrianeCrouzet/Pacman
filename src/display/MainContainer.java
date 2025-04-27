@@ -165,9 +165,14 @@ public class MainContainer extends JFrame {
         // 1. Gestion du respawn si nécessaire
         if (respawnTimer > 0) {
             respawnTimer--;
-            if (respawnTimer == 0) {
-                pacman.respawn();
-                labyrinthPanel.getPersonnages().initGhostsPositions(labyrinthPanel, null);
+            if (respawnTimer == 60) {
+                if (!random){
+                    labyrinthPanel.chooseMaze(random);
+                    labyrinthPanel.classicalMaze();
+                }else {
+                    labyrinthPanel.replaceDot();
+                    labyrinthPanel.initialiseCharactersInMaze();
+                }
             }
             labyrinthPanel.repaint();
             return;
@@ -185,7 +190,7 @@ public class MainContainer extends JFrame {
         // 4. Vérification des collisions entre les fantômes et Pacman
         if (pacman.checkGhostCollisions(labyrinthPanel.getPersonnages().getGhosts())) {
             if (pacman.getLives() > 0) {
-                respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
+                respawnTimer = 120; // 2 seconde de délai (à 60 FPS)
             } else {
                 System.out.println("Game Over!");
                 endGame(false);

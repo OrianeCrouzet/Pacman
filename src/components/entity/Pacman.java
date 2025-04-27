@@ -41,7 +41,6 @@ public class Pacman {
         this.direction = direction;
         this.mouthOpen = true;
         this.characters = characters;
-
     }
 
     public void update() {
@@ -68,6 +67,11 @@ public class Pacman {
     public void snapToGrid() {
         c = ((c + Cell.SIZE / 2) / Cell.SIZE) * Cell.SIZE;
         r = ((r + Cell.SIZE / 2) / Cell.SIZE) * Cell.SIZE;
+    }
+
+    public void setPosition(int c,int r){
+        this.c = ((c / Cell.SIZE) * Cell.SIZE) + (Cell.SIZE / 2) -( PACMAN_SIZE / 2);
+        this.r = ((r / Cell.SIZE) * Cell.SIZE) + (Cell.SIZE / 2) - (PACMAN_SIZE / 2);
     }
 
     public void move() {
@@ -160,21 +164,7 @@ public class Pacman {
         }
     }
 
-    private void checkWinCondition() {
-        boolean allPointsEaten = true;
-        for (Cell[] row : lab.maze) {
-            for (Cell cell : row) {
-                if (cell.cellval == CellType.POINT.getValue()) {
-                    allPointsEaten = false;
-                    break;
-                }
-            }
-        }
-        if (allPointsEaten) {
-            System.out.println("Tous les points ont été mangés!");
-            // Ici vous pourriez déclencher un écran de victoire
-        }
-    }
+
 
     public boolean checkGhostCollisions(List<Ghosts> ghosts) {
         for (Ghosts ghost : ghosts) {
@@ -195,23 +185,7 @@ public class Pacman {
         img = characters.getPacmanImage(direction, mouthOpen);
     }
 
-    public void respawn() {
-        // Réinitialisation position
-        Random rand = new Random();
 
-        while (true) {
-            int tempC = rand.nextInt(lab.cols);
-            int tempR = rand.nextInt(lab.rows);
-
-            if (lab.maze[tempC][tempR].cellval != CellType.WALL.getValue()) {
-                this.c = tempC * Cell.SIZE + Cell.SIZE / 2;
-                this.r = tempR * Cell.SIZE + Cell.SIZE / 2;
-                this.direction = Direction.RIGHT;
-                snapToGrid();
-                break;
-            }
-        }
-    }
 
     /*********************************************** GETTERS ***********************************************************/
 
