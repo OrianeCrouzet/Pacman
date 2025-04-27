@@ -1,13 +1,11 @@
 package display;
 
-import components.entity.Cell;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.*;
 
-import java.awt.*;
 import javax.swing.*;
-
+import java.awt.*;
 
 public class MainContainer extends JFrame {
 
@@ -22,14 +20,15 @@ public class MainContainer extends JFrame {
 
     private GamePanel gamePanel;
 
+    public boolean random;
+
     enum GameState {MENU, RUNNING, GAME_OVER}
 
     public MainContainer() {
         super("Pacman Game");
         // Initialisation des composants
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(667, 1000);
-        setLocationRelativeTo(null);
+        setWindow(667, 1000);
 
         cardLayout = new CardLayout();
         container = new JPanel(cardLayout);
@@ -39,9 +38,13 @@ public class MainContainer extends JFrame {
         container.add(menuScreen, GameState.MENU.name());
 
         // Game Panel
-        labyrinthPanel = new Labyrinth(this);
+        labyrinthPanel = new Labyrinth();
         gamePanel = new GamePanel(labyrinthPanel);
         container.add(gamePanel, GameState.RUNNING.name());
+
+        // GAME OVER Screen
+        GameOver gameOver = new GameOver(this);
+        container.add(gameOver, GameState.GAME_OVER.name());
 
         gameTimer = null;
 
@@ -54,20 +57,23 @@ public class MainContainer extends JFrame {
 
 
     public void showMenu() {
+        setWindow(667, 1000);
         cardLayout.show(container, GameState.MENU.name());
     }
 
-    public void startGame() {
-        setSize(Labyrinth.SCREEN_WIDTH, Labyrinth.SCREEN_HEIGHT+ HUDPanel.HUD_HEIGHT+23); // +23 car sinon le bas est cut
-        labyrinthPanel.generateMaze();
+    public void startGame(boolean random) {
+        this.random = random;
         initializeGame();
-        gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
+        setWindow(labyrinthPanel.SCREEN_WIDTH, labyrinthPanel.SCREEN_HEIGHT + HUDPanel.HUD_HEIGHT + 23);
+
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
-    public void GameOver(){
-
-        cardLayout.show(container,GameState.GAME_OVER.name());
+    public void gameOver() {
+        setWindow(1300, 1000);
+        labyrinthPanel.reset();
+        gameTimer.stop();
+        cardLayout.show(container, GameState.GAME_OVER.name());
     }
 
 
@@ -75,8 +81,10 @@ public class MainContainer extends JFrame {
      *
      */
     private void initializeGame() {
-        labyrinthPanel.initialiseCharactersInMaze();  // Initialisation après la création du labyrinthe
+        gameState = GameState.RUNNING;
+        labyrinthPanel.chooseMaze(random);
         setupGameLoop();
+        gamePanel.setPacman(labyrinthPanel.getPersonnages().getPacman());
     }
 
     /**
@@ -85,6 +93,11 @@ public class MainContainer extends JFrame {
     private void setupGameLoop() {
         gameTimer = new Timer(30, e -> updateGame());
         gameTimer.start();
+    }
+
+    public void setWindow(int width, int height) {
+        setSize(width, height);
+        setLocationRelativeTo(null);
     }
 
     /**
@@ -101,7 +114,7 @@ public class MainContainer extends JFrame {
             respawnTimer--;
             if (respawnTimer == 0) {
                 pacman.respawn();
-                labyrinthPanel.getPersonnages().initGhostsRandomPositions(labyrinthPanel);
+                labyrinthPanel.getPersonnages().initGhostsPositions(labyrinthPanel,null);
             }
             labyrinthPanel.repaint();
             return;
@@ -121,9 +134,9 @@ public class MainContainer extends JFrame {
             if (pacman.getLives() > 0) {
                 respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
             } else {
-                gameState = GameState.GAME_OVER;
                 System.out.println("Game Over!");
-                GameOver();
+                gameState = GameState.GAME_OVER;
+                gameOver();
             }
         }
 

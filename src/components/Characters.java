@@ -5,19 +5,19 @@ import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.Labyrinth;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import javax.imageio.ImageIO;
+import java.util.*;
 
 public class Characters {
 
-    public enum GhostColor { RED, BLUE, YELLOW }
+    public enum GhostColor {RED, BLUE, YELLOW}
+
+    public static final Random rand = new Random();
+
 
     /**
      * Sprites des fantômes ordonnés par couleur
@@ -30,7 +30,7 @@ public class Characters {
     private final Map<Direction, PacmanSprites> pacmanSprites = new EnumMap<>(Direction.class);
 
     /**
-     * Liste de tous les fantômes
+     * Liste de tous les fantômes, y compris le fantôme spécial !
      */
     private final List<Ghosts> ghosts = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class Characters {
      */
     private static class GhostSprites {
         Image left, right;
-        
+
         public GhostSprites(Image left, Image right) {
             this.left = left;
             this.right = right;
@@ -54,7 +54,7 @@ public class Characters {
     private static class PacmanSprites {
         Image mouthOpen, mouthClosed;
 
-        public PacmanSprites(Image open, Image closed){
+        public PacmanSprites(Image open, Image closed) {
             this.mouthOpen = open;
             this.mouthClosed = closed;
         }
@@ -65,7 +65,7 @@ public class Characters {
         loadPacmanSprites();
     }
 
-    /********************************** INITIALISATION DES FANTÔMES ***********************************************/
+    /********************************** INITIALISATION DES FANTÔMES BASIQUES ***********************************************/
 
     /**
      * Fonction qui charge touts les sprites des fantômes par couleur (yeux vers la gauche et vers la droite)
@@ -81,6 +81,7 @@ public class Characters {
 
     /**
      * Méthode robuste de chargement d'image avec gestion des erreurs
+     *
      * @param path : le chemin vers la ressource image.png souhaitée
      * @return : l'image chargée depuis les sources
      */
@@ -88,7 +89,7 @@ public class Characters {
         try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
-                img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = compatible.createGraphics();
             g.drawImage(img, 0, 0, null);
             g.dispose();
@@ -101,34 +102,35 @@ public class Characters {
 
     /**
      * Fonction qui créé une image de secours au cas où les images des fantômes ne soient pas chargées correctement
+     *
      * @return : une image d'un fantôme rond et rouge, avec des yeux noirs
      */
     private BufferedImage createFallbackGhostImage() {
         BufferedImage img = new BufferedImage(30, 30, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = img.createGraphics();
-        
+
         // Dessin d'un fantôme de base (cercle avec yeux)
         g.setColor(Color.RED);
         g.fillRoundRect(0, 0, 30, 30, 10, 10);
         g.setColor(Color.WHITE);
         g.fillOval(5, 8, 8, 8);
         g.fillOval(17, 8, 8, 8);
-        
+
         g.dispose();
         return img;
     }
 
     /**
      * Méthode utilitaire pour obtenir une image de fantôme
-     * @param color : la couleur du fantôme 
-     * @param dir : la direction du regard du fantôme
+     *
+     * @param color : la couleur du fantôme
+     * @param dir   : la direction du regard du fantôme
      * @return : l'image du fantôme en fonction des paramètres d'entrée
      */
     public Image getGhostImage(GhostColor color, Direction dir) {
         GhostSprites sprites = ghostSprites.get(color);
         return (dir == Direction.LEFT) ? sprites.left : sprites.right;
     }
-
 
     /********************************** INITIALISATION DE PACMAN ***********************************************/
 
@@ -146,6 +148,7 @@ public class Characters {
 
     /**
      * Méthode robuste de chargement d'image avec gestion des erreurs
+     *
      * @param path : le chemin vers la ressource image.png souhaitée
      * @return : l'image chargée depuis les sources
      */
@@ -153,7 +156,7 @@ public class Characters {
         try (InputStream is = getClass().getResourceAsStream("/images/" + path)) {
             BufferedImage img = ImageIO.read(is);
             BufferedImage compatible = new BufferedImage(
-                img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+                    img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g = compatible.createGraphics();
             g.drawImage(img, 0, 0, null);
             g.dispose();
@@ -179,38 +182,107 @@ public class Characters {
         return isMouthOpen ? sprites.mouthOpen : sprites.mouthClosed;
     }
 
-    /********************************** POSITIONNEMENT DES FANTÔMES ***********************************************/
+    /*************************** POSITIONNEMENT DES FANTÔMES BASIQUES ET DU FANTÔME SPECIAL ********************************/
 
     /**
      * Initialisation des fantômes avec des couleurs variées
+     *
      * @param lab : le labyrinthe courant
      */
-    public void initGhostsRandomPositions(Labyrinth lab) {
+    public void initGhostsPositions(Labyrinth lab,int[][] abs) {
         ghosts.clear();
-        GhostColor[] colors = GhostColor.values();
-        Random rand = new Random();
-        
-        for (GhostColor color : colors) {
-            Ghosts ghost = createGhostAtRandomPosition(rand, lab, color);
+        GhostColor[] allColors = GhostColor.values();
+
+        int lastIndex = allColors.length;
+
+        //Fantômes basiques
+        for (int i = 0; i < lastIndex; i++) {
+            GhostColor color = allColors[i];
+            int[] pos = new int[2];
+            if (abs == null){
+                pos = createGhostAtRandomPosition(lab, color);
+            }else {
+                pos[0] = abs[i][0];
+                pos[1] = abs[i][1];
+            }
+            Ghosts ghost = putGhost(lab, pos[0], pos[1], color);
             ghosts.add(ghost);
-            System.out.println("Ghost " + color + " créé à (" + ghost.x + "," + ghost.y + ")");
+            System.out.println("Ghost " + color + " créé à (" + ghost.c + "," + ghost.r + ")");
         }
+
+/*        //Fantôme spécial
+        GhostColor color = allColors[lastIndex];
+        SpecialGhost specialGhost = createSpecialGhostAtRandomPosition(rand, lab, color);
+        ghosts.add(specialGhost);
+        System.out.println("Ghost " + color + " créé à (" + specialGhost.c + "," + specialGhost.r + ")");*/
+
     }
 
     /**
      * Création d'un fantôme à une position arbitraire
-     * @param rand : numéro aléatoire
-     * @param lab : le labyrinthe courant
+     *
+     * @param lab   : le labyrinthe courant
      * @param color : la couleur du fantôme à créer
      * @return : un fantôme créé à une position aléatoire, de la couleur souhaitée
      */
-    private Ghosts createGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
+    private int[] createGhostAtRandomPosition(Labyrinth lab, GhostColor color) {
+        while (true) {
+            int c = rand.nextInt(lab.cols);
+            int r = rand.nextInt(lab.rows);
+
+            if (isValidPosition(lab, c, r)) {
+                return new int[]{c,r};
+            }
+        }
+    }
+    public Ghosts putGhost(Labyrinth lab,int c,int r, GhostColor color){
+        return new Ghosts(
+                c * Cell.SIZE + Cell.SIZE / 2,
+                r * Cell.SIZE + Cell.SIZE / 2,
+                lab,
+                getGhostImage(color, Direction.LEFT),
+                color
+        );
+
+    }
+
+    /**
+     * Vérifie si la position de départ est valide pour un personnage
+     *
+     * @param lab : Le labyrinthe de différence
+     * @param c   : position c
+     * @param r   : position r
+     * @return : true si la position du personnage est valide
+     * : false sinon
+     */
+    private boolean isValidPosition(Labyrinth lab, int c, int r) {
+        // 1. La cellule doit être un chemin
+        if (lab.maze[c][r].cellval != CellType.POINT.getValue()) {
+            return false;
+        }
+
+        // 2. Vérifie qu'aucun fantôme n'est déjà trop proche
+        for (Ghosts existing : ghosts) {
+            int ghostCellC = existing.c / Cell.SIZE;
+            int ghostCellR = existing.r / Cell.SIZE;
+
+            if (Math.abs(ghostCellC - c) < 2 && Math.abs(ghostCellR - r) < 2) {
+                return false; // Évite le chevauchement
+            }
+        }
+
+        return true;
+    }
+
+    /*    *//************************************** CREATION DU FANTÔME SPECIAL ***********************************************//*
+
+    private SpecialGhost createSpecialGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
         while (true) {
             int x = rand.nextInt(Labyrinth.COLS);
             int y = rand.nextInt(Labyrinth.ROWS);
-            
+
             if (isValidPosition(lab, x, y)) {
-                return new Ghosts(
+                return new SpecialGhost(
                     x * Cell.SIZE + Cell.SIZE /2,
                     y * Cell.SIZE + Cell.SIZE /2,
                     lab,
@@ -221,61 +293,38 @@ public class Characters {
         }
     }
 
-    /**
-     * Vérifie si la position de départ est valide pour un personnage
-     * @param lab : Le labyrinthe de différence
-     * @param x : position x
-     * @param y : position y
-     * @return : true si la position du personnage est valide
-     *         : false sinon
-     */
-    private boolean isValidPosition(Labyrinth lab, int x, int y) {
-        // 1. La cellule doit être un chemin
-        if (lab.maze[x][y].cellval != CellType.POINT.getValue()) {
-            return false;
-        }
-        
-        // 2. Vérifie qu'aucun fantôme n'est déjà trop proche
-        for (Ghosts existing : ghosts) {
-            int ghostCellX = existing.x / Cell.SIZE;
-            int ghostCellY = existing.y / Cell.SIZE;
-            
-            if (Math.abs(ghostCellX - x) < 2 && Math.abs(ghostCellY - y) < 2) {
-                return false; // Évite le chevauchement
-            }
-        }
-        
-        return true;
-    }
-
-    /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
+ */   /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
 
     /**
      * Initialisation de Pacman
+     *
      * @param lab : le labyrinthe courant
      */
     public void initPacmanPosition(Labyrinth lab) {
-        Random rand = new Random();
-        
+
         // Trouver une position valide
         while (true) {
-            int x = rand.nextInt(Labyrinth.COLS);
-            int y = rand.nextInt(Labyrinth.ROWS);
-            
-            if (isValidPosition(lab, x, y)) {
+            int c = rand.nextInt(lab.cols);
+            int r = rand.nextInt(lab.rows);
+
+            if (isValidPosition(lab, c, r)) {
                 // Créer Pacman au centre de la cellule
-                this.pacman = new Pacman(
-                    x * Cell.SIZE + Cell.SIZE /2,
-                    y * Cell.SIZE + Cell.SIZE /2,
-                    lab,
-                    getPacmanImage(Direction.RIGHT, true),
-                    this
-                );
-            
-                System.out.println("Pacman initialisé en (" + x + "," + y + ")");
+                putPacman(lab, c, r,Direction.RIGHT);
                 return;
             }
         }
+    }
+
+    public void putPacman(Labyrinth lab,int c,int r,Direction direction){
+        this.pacman = new Pacman(
+                c * Cell.SIZE + Cell.SIZE / 2,
+                r * Cell.SIZE + Cell.SIZE / 2,
+                lab,
+                getPacmanImage(direction, true),
+                this,
+                direction
+        );
+        System.out.println("Pacman initialisé en (" + c + "," + r + ")");
     }
 
 
@@ -283,6 +332,7 @@ public class Characters {
 
     /**
      * Fonction qui permet de récupérer le fantôme numéro i
+     *
      * @param i : l'indice du fantôme qu'on veut retrouver
      * @return : le fantôme à l'indice i
      */
@@ -292,6 +342,7 @@ public class Characters {
 
     /**
      * Fonction qui retourne la liste de tous les fantômes
+     *
      * @return : la liste de tous les fantômes
      */
     public List<Ghosts> getGhosts() {
@@ -300,14 +351,14 @@ public class Characters {
 
     /**
      * Fonction qui retourne Pacman
+     *
      * @return : Pacman
      */
-    public Pacman getPacman(){
+    public Pacman getPacman() {
         return pacman;
     }
 
 
-    
 }
 
 
