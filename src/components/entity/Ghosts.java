@@ -75,7 +75,7 @@ public class Ghosts {
      * @param rPixel
      * @return
      */
-    private boolean isValid(int cPixel, int rPixel) {
+    protected boolean isValid(int cPixel, int rPixel) {
         // 1. Vérification des bords de l'écran
         if (cPixel < 0 || rPixel < 0 ||
                 cPixel + GHOST_SIZE > lab.getWidth() ||
