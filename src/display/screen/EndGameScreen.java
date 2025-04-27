@@ -1,24 +1,31 @@
 package display.screen;
 
 import display.MainContainer;
-
-import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import javax.swing.*;
 
-public class GameOver extends JPanel {
+public class EndGameScreen extends JPanel {
+
+    private boolean win = false;
 
     private final MainContainer mainFrame;
     private Font pixelFont;
 
-    public GameOver(MainContainer frame) {
+    private String mainText = "";
+    private String buttonLeft = "";
+    private String buttonRight = "";
+    private Color color = Color.PINK;
+
+    public EndGameScreen(MainContainer frame,boolean win) {
         this.mainFrame = frame;
+        setWin(win);
         setLayout(new BorderLayout());
 
         // Charger la police une seule fois
         try {
-            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("font/PressStart2P-Regular.ttf");
+            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("ressources/font/PressStart2P-Regular.ttf");
             if (fontStream == null) throw new IOException("Fichier de police non trouvé");
             pixelFont = Font.createFont(Font.TRUETYPE_FONT, fontStream).deriveFont(40f);
             GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(pixelFont);
@@ -33,22 +40,22 @@ public class GameOver extends JPanel {
         buttonPanel.setOpaque(false); // transparent
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 20));
 
-        JButton retryButton = new JButton("Retry?");
-        JButton quitButton = new JButton("Rage Quit");
+        JButton restart = new JButton(buttonLeft);
+        JButton mainMenu = new JButton(buttonRight);
 
         Dimension buttonSize = new Dimension(200, 50);
-        retryButton.setPreferredSize(buttonSize);
-        quitButton.setPreferredSize(buttonSize);
+        restart.setPreferredSize(buttonSize);
+        mainMenu.setPreferredSize(buttonSize);
 
-        retryButton.addActionListener(e -> mainFrame.startGame());
-        quitButton.addActionListener(e -> mainFrame.dispose());
+        restart.addActionListener(e -> mainFrame.startGame(mainFrame.random));
+        mainMenu.addActionListener(e -> mainFrame.showMenu());
 
-        buttonPanel.add(retryButton);
-        buttonPanel.add(quitButton);
+        buttonPanel.add(restart);
+        buttonPanel.add(mainMenu);
 
         add(buttonPanel, BorderLayout.SOUTH);
         setBackground(Color.BLACK);
-        setForeground(Color.RED);
+        setForeground(color);
     }
 
     @Override
@@ -59,7 +66,7 @@ public class GameOver extends JPanel {
         g.setColor(getForeground());
 
         // Centrage du texte
-        String message = "GAME OVER";
+        String message = mainText;
         FontMetrics fm = g.getFontMetrics();
         int textWidth = fm.stringWidth(message);
         int x = (getWidth() - textWidth) / 2;
@@ -67,4 +74,25 @@ public class GameOver extends JPanel {
 
         g.drawString(message, x, y);
     }
+
+    private void setWin(boolean win){
+        this.win = win;
+        setText();
+    }
+
+    private void setText(){
+        if (win){
+            mainText = "YOU WIN !";
+            buttonLeft = "New Game";
+            color = Color.GREEN;
+        }else {
+            mainText = "GAME OVER";
+            buttonLeft = "Retry?";
+            color = Color.RED;
+        }
+        buttonRight = "Main Menu";
+    }
+
+
+
 }

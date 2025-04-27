@@ -1,9 +1,9 @@
 package components;
 
 public enum Direction {
-    LEFT('L'), 
-    RIGHT('R'), 
-    UP('U'), 
+    LEFT('L'),
+    RIGHT('R'),
+    UP('U'),
     DOWN('D');
 
     private final char code;
@@ -38,6 +38,16 @@ public enum Direction {
             case UP -> -1;
             case DOWN -> 1;
             default -> 0;
+        };
+    }
+
+    public Direction oppositeDirection(){
+        return switch (fromCode(code)){
+            case UP -> DOWN;
+            case DOWN -> UP;
+            case LEFT -> RIGHT;
+            case RIGHT -> LEFT;
+            default -> throw new RuntimeException("direction not availidable");
         };
     }
 }

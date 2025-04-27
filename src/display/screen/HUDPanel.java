@@ -1,13 +1,10 @@
 package display.screen;
 
 import components.entity.Pacman;
-
-import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import javax.swing.*;
 
 public class HUDPanel extends JPanel {
 
@@ -21,7 +18,7 @@ public class HUDPanel extends JPanel {
         setForeground(Color.WHITE);
     }
 
-    public void setPacman(Pacman pacman){
+    public void setPacman(Pacman pacman) {
         this.pacman = pacman;
     }
 
@@ -34,7 +31,7 @@ public class HUDPanel extends JPanel {
 
         try {
             // Charger la police depuis le classpath en utilisant un InputStream
-            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("font/PressStart2P-Regular.ttf");
+            InputStream fontStream = getClass().getClassLoader().getResourceAsStream("ressources/font/PressStart2P-Regular.ttf");
             if (fontStream == null) {
                 throw new IOException("Fichier de police non trouvé dans le classpath");
             }
@@ -52,11 +49,11 @@ public class HUDPanel extends JPanel {
 
         // Dessiner les textes
         g.drawString("HIGH SCORE: ", 100, 40);
-        g.drawString(String.valueOf(pacman.getScore()),100,70);
+        g.drawString(String.valueOf(pacman.getScore()), 100, 70);
         g.drawString("Vies: " + pacman.getLives(), 600, 40);
 
         g.setColor(Color.BLUE);
-        g.drawLine(0,75,1000,75);
+        g.drawLine(0, 75, 1000, 75);
     }
 
 
