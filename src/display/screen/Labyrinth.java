@@ -34,6 +34,8 @@ public class Labyrinth extends JPanel {
     private UnionFind uf;
 
 
+    private int dotLeft;
+
     public Labyrinth() {
 
         //TODO déplacer dans un handler mais conflit de fenêtre
@@ -165,7 +167,27 @@ public class Labyrinth extends JPanel {
         fixCenterCases();
         initialiseCharactersInMaze();
     }
+    public void printMaze() {
+        for (int c = 0; c < cols; c++) {
+            for (int r = 0; r < rows; r++) {
+                System.out.print(" " + maze[c][r] + " ");
+            }
+            System.out.println();
+        }
+    }
 
+    public void seeDotLeft() {
+        dotLeft = 0;
+        for (Cell[] c : maze) {
+            for (Cell r : c) {
+                if (r.cellval == 1) {
+                    dotLeft++;
+                }
+            }
+        }
+        System.out.println(dotLeft);
+    }
+    
     private void emptyMaze() {
         maze = new Cell[cols][rows];
         for (int c = 0; c < cols; c++) {
@@ -269,15 +291,15 @@ public class Labyrinth extends JPanel {
      */
     private void fixBorderCases() {
         // Bordure haut/bas
-        for (int x = 1; x < cols - 1; x++) {
-            fixBorderCell(x, 0, x, 1);       // Haut
-            fixBorderCell(x, rows - 1, x, rows - 2); // Bas
+        for (int c = 1; c < cols - 1; c++) {
+            fixBorderCell(c, 0, c, 1);       // Haut
+            fixBorderCell(c, rows - 1, c, rows - 2); // Bas
         }
 
         // Bordure gauche/droite
-        for (int y = 1; y < rows - 1; y++) {
-            fixBorderCell(0, y, 1, y);       // Gauche
-            fixBorderCell(cols - 1, y, cols - 2, y); // Droite
+        for (int r = 1; r < rows - 1; r++) {
+            fixBorderCell(0, r, 1, r);       // Gauche
+            fixBorderCell(cols - 1, r, cols - 2, r); // Droite
         }
     }
 
@@ -454,5 +476,10 @@ public class Labyrinth extends JPanel {
         emptyMaze();
         edges = new ArrayList<>();
         uf = new UnionFind(rows * cols);
+    }
+
+
+    public int getDotLeft() {
+        return dotLeft;
     }
 }

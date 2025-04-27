@@ -22,7 +22,9 @@ public class MainContainer extends JFrame {
 
     public boolean random;
 
-    enum GameState {MENU, RUNNING, GAME_OVER}
+    enum GameState {
+        MENU, RUNNING, GAME_OVER, WIN
+    }
 
     public MainContainer() {
         super("Pacman Game");
@@ -42,9 +44,13 @@ public class MainContainer extends JFrame {
         gamePanel = new GamePanel(labyrinthPanel);
         container.add(gamePanel, GameState.RUNNING.name());
 
-        // GAME OVER Screen
-        GameOver gameOver = new GameOver(this);
-        container.add(gameOver, GameState.GAME_OVER.name());
+        // End Game Screen
+        EndGameScreen gameOverScreen = new EndGameScreen(this, false);
+        container.add(gameOverScreen, GameState.GAME_OVER.name());
+
+        EndGameScreen winningScreen = new EndGameScreen(this, true);
+        container.add(winningScreen, GameState.WIN.name());
+
 
         gameTimer = null;
 
@@ -69,11 +75,15 @@ public class MainContainer extends JFrame {
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
-    public void gameOver() {
+    public void endGame(boolean win) {
         setWindow(1300, 1000);
         labyrinthPanel.reset();
         gameTimer.stop();
-        cardLayout.show(container, GameState.GAME_OVER.name());
+        if (win) {
+            cardLayout.show(container, GameState.WIN.name());
+        } else {
+            cardLayout.show(container, GameState.GAME_OVER.name());
+        }
     }
 
 
@@ -135,12 +145,18 @@ public class MainContainer extends JFrame {
                 respawnTimer = 60; // 1 seconde de délai (à 60 FPS)
             } else {
                 System.out.println("Game Over!");
-                gameState = GameState.GAME_OVER;
-                gameOver();
+                endGame(false);
             }
         }
 
-        // 5. Rafraîchissement
+        // 5. Recompte le nombre de dotLeft
+
+        labyrinthPanel.seeDotLeft();
+        if (labyrinthPanel.getDotLeft() == 0) {
+            endGame(true);
+        }
+
+        // 6. Rafraîchissement
         labyrinthPanel.repaint();
         gamePanel.updateHUD();
     }
