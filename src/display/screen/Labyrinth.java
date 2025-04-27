@@ -168,9 +168,9 @@ public class Labyrinth extends JPanel {
         initialiseCharactersInMaze();
     }
     public void printMaze() {
-        for (int i = 0; i < ROWS; i++) {
-            for (int j = 0; j < COLS; j++) {
-                System.out.print(" " + maze[j][i] + " ");
+        for (int c = 0; c < cols; c++) {
+            for (int r = 0; r < rows; r++) {
+                System.out.print(" " + maze[c][r] + " ");
             }
             System.out.println();
         }
@@ -178,9 +178,9 @@ public class Labyrinth extends JPanel {
 
     public void seeDotLeft() {
         dotLeft = 0;
-        for (Cell[] i : maze) {
-            for (Cell j : i) {
-                if (j.cellval == 1) {
+        for (Cell[] c : maze) {
+            for (Cell r : c) {
+                if (r.cellval == 1) {
                     dotLeft++;
                 }
             }
