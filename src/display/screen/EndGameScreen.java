@@ -6,19 +6,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import javax.swing.*;
 
+/**
+ * EndGameScreen est l'écran affiché à la fin du jeu.
+ * 
+ * Cet écran permet d'afficher :
+ * - Un message de victoire ou de défaite
+ * - Deux boutons : rejouer ou revenir au menu principal
+ * - Une personnalisation des couleurs et du texte en fonction du résultat
+ */
 public class EndGameScreen extends JPanel {
 
     private boolean win = false;
-
     private final MainContainer mainFrame;
     private Font pixelFont;
-
     private String mainText = "";
     private String buttonLeft = "";
     private String buttonRight = "";
     private Color color = Color.PINK;
 
-    public EndGameScreen(MainContainer frame,boolean win) {
+    /**
+     * Constructeur de EndGameScreen.
+     * Initialise l'écran de fin avec l'état du jeu (gagné ou perdu),
+     * charge la police personnalisée, configure les boutons et l'affichage.
+     *
+     * @param frame la fenêtre principale contenant le jeu
+     * @param win true si le joueur a gagné, false sinon
+     */
+    public EndGameScreen(MainContainer frame, boolean win) {
         this.mainFrame = frame;
         setWin(win);
         setLayout(new BorderLayout());
@@ -36,7 +50,6 @@ public class EndGameScreen extends JPanel {
 
         // Panel des boutons
         JPanel buttonPanel = new JPanel();
-
         buttonPanel.setOpaque(false); // transparent
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 50, 20));
 
@@ -58,6 +71,11 @@ public class EndGameScreen extends JPanel {
         setForeground(color);
     }
 
+    /**
+     * Dessine l'écran de fin avec le message centré.
+     *
+     * @param g l'objet Graphics pour dessiner
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -75,24 +93,30 @@ public class EndGameScreen extends JPanel {
         g.drawString(message, x, y);
     }
 
-    private void setWin(boolean win){
+    /**
+     * Définit l'état du jeu (victoire ou défaite) et met à jour le texte affiché.
+     *
+     * @param win true si le joueur a gagné, false sinon
+     */
+    private void setWin(boolean win) {
         this.win = win;
         setText();
     }
 
-    private void setText(){
-        if (win){
+    /**
+     * Met à jour les textes, couleurs et intitulés des boutons
+     * en fonction du résultat de la partie.
+     */
+    private void setText() {
+        if (win) {
             mainText = "YOU WIN !";
             buttonLeft = "New Game";
             color = Color.GREEN;
-        }else {
+        } else {
             mainText = "GAME OVER";
             buttonLeft = "Retry?";
             color = Color.RED;
         }
         buttonRight = "Main Menu";
     }
-
-
-
 }

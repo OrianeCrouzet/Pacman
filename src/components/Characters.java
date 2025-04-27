@@ -12,6 +12,21 @@ import java.util.*;
 import java.util.List;
 import javax.imageio.ImageIO;
 
+/**
+ * La classe Characters gère tous les personnages du jeu Pacman, y compris Pacman lui-même,
+ * les fantômes normaux et le fantôme spécial. Elle est responsable de :
+ * - Chargement et gestion des sprites pour tous les personnages
+ * - Initialisation des positions des personnages dans le labyrinthe
+ * - Fourniture des images appropriées pour l'affichage des personnages
+ * 
+ * La classe utilise des structures internes pour organiser les sprites par type et direction,
+ * et propose des mécanismes de repli (fallback) en cas d'échec de chargement des images.
+ * 
+ * @see components.entity.Pacman
+ * @see components.entity.Ghosts
+ * @see components.entity.SpecialGhost
+ * @see display.screen.Labyrinth
+ */
 public class Characters {
 
     public enum GhostColor {RED, BLUE, YELLOW}

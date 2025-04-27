@@ -3,10 +3,21 @@ package display;
 import components.entity.Ghosts;
 import components.entity.Pacman;
 import display.screen.*;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
+/**
+ * MainContainer est la classe principale de l'application Pacman.
+ *
+ * Elle hérite de JFrame et sert de conteneur principal pour les différentes
+ * vues du jeu : menu principal, partie en cours, écran de victoire, écran de défaite.
+ *
+ * Cette classe gère :
+ * - Le système de navigation entre les écrans via un CardLayout
+ * - Le démarrage, la mise à jour et la fin du jeu
+ * - Le timer principal du jeu et la logique de mise à jour (boucle de jeu)
+ * - La gestion des états du jeu (menu, en cours, gagné, perdu)
+ */
 public class MainContainer extends JFrame {
 
     private CardLayout cardLayout;
@@ -22,10 +33,18 @@ public class MainContainer extends JFrame {
 
     public boolean random;
 
+    /**
+     * Enumération représentant les différents états du jeu.
+     */
     enum GameState {
         MENU, RUNNING, GAME_OVER, WIN
     }
 
+    /**
+     * Constructeur principal de MainContainer.
+     * Initialise les composants graphiques, les différents écrans
+     * et affiche le menu principal.
+     */
     public MainContainer() {
         super("Pacman Game");
         // Initialisation des composants
@@ -51,22 +70,27 @@ public class MainContainer extends JFrame {
         EndGameScreen winningScreen = new EndGameScreen(this, true);
         container.add(winningScreen, GameState.WIN.name());
 
-
         gameTimer = null;
 
         add(container);
         setVisible(true);
 
         showMenu();
-
     }
 
-
+    /**
+     * Affiche l'écran du menu principal.
+     */
     public void showMenu() {
         setWindow(667, 1000);
         cardLayout.show(container, GameState.MENU.name());
     }
 
+    /**
+     * Démarre une nouvelle partie.
+     *
+     * @param random indique si un labyrinthe aléatoire doit être choisi
+     */
     public void startGame(boolean random) {
         this.random = random;
         initializeGame();
@@ -75,10 +99,17 @@ public class MainContainer extends JFrame {
         cardLayout.show(container, GameState.RUNNING.name());
     }
 
+    /**
+     * Termine la partie et affiche l'écran correspondant selon si le joueur a gagné ou perdu.
+     *
+     * @param win true si le joueur a gagné, false sinon
+     */
     public void endGame(boolean win) {
         setWindow(1300, 1000);
         labyrinthPanel.reset();
-        gameTimer.stop();
+        if (gameTimer != null) {
+            gameTimer.stop();
+        }
         this.gameState = GameState.GAME_OVER;
         if (win) {
             cardLayout.show(container, GameState.WIN.name());
@@ -87,9 +118,9 @@ public class MainContainer extends JFrame {
         }
     }
 
-
     /**
-     *
+     * Initialise les éléments nécessaires pour démarrer une nouvelle partie :
+     * choix du labyrinthe, démarrage de la boucle de jeu, affectation de Pacman.
      */
     private void initializeGame() {
         gameState = GameState.RUNNING;
@@ -99,20 +130,31 @@ public class MainContainer extends JFrame {
     }
 
     /**
-     *
+     * Configure et lance le Timer qui met à jour le jeu à intervalle régulier.
      */
     private void setupGameLoop() {
         gameTimer = new Timer(30, e -> updateGame());
         gameTimer.start();
     }
 
+    /**
+     * Définit la taille de la fenêtre et la centre sur l'écran.
+     *
+     * @param width largeur de la fenêtre
+     * @param height hauteur de la fenêtre
+     */
     public void setWindow(int width, int height) {
         setSize(width, height);
         setLocationRelativeTo(null);
     }
 
     /**
-     *
+     * Met à jour l'état du jeu :
+     * - Gestion du respawn
+     * - Déplacement de Pacman et des fantômes
+     * - Gestion des collisions
+     * - Vérification des conditions de victoire
+     * - Rafraîchissement de l'affichage
      */
     private void updateGame() {
         // 0. Vérification de l'état du jeu
@@ -125,7 +167,7 @@ public class MainContainer extends JFrame {
             respawnTimer--;
             if (respawnTimer == 0) {
                 pacman.respawn();
-                labyrinthPanel.getPersonnages().initGhostsPositions(labyrinthPanel,null);
+                labyrinthPanel.getPersonnages().initGhostsPositions(labyrinthPanel, null);
             }
             labyrinthPanel.repaint();
             return;
@@ -151,8 +193,6 @@ public class MainContainer extends JFrame {
         }
 
         // 5. Recompte le nombre de dotLeft
-
-
         if (labyrinthPanel.getDotLeft() == 0 && gameState != GameState.GAME_OVER) {
             endGame(true);
         }
@@ -161,5 +201,4 @@ public class MainContainer extends JFrame {
         labyrinthPanel.repaint();
         gamePanel.updateHUD();
     }
-
 }

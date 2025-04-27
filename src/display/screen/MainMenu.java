@@ -5,11 +5,23 @@ import java.awt.*;
 import java.net.URL;
 import javax.swing.*;
 
+/**
+ * MainMenu est l'écran principal affiché au lancement du jeu.
+ *
+ * Il propose au joueur deux options :
+ * - Lancer une partie classique
+ * - Lancer une partie aléatoire
+ */
 public class MainMenu extends JPanel {
 
-    //TODO à lire j'ai copié un truc trouvé
     private final MainContainer mainFrame;
 
+    /**
+     * Constructeur de MainMenu.
+     * Initialise l'écran du menu principal avec une image de fond et deux boutons de démarrage de partie.
+     *
+     * @param frame la fenêtre principale contenant le menu
+     */
     public MainMenu(MainContainer frame) {
         this.mainFrame = frame;
         setLayout(new BorderLayout());
