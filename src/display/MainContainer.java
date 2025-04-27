@@ -79,6 +79,7 @@ public class MainContainer extends JFrame {
         setWindow(1300, 1000);
         labyrinthPanel.reset();
         gameTimer.stop();
+        this.gameState = GameState.GAME_OVER;
         if (win) {
             cardLayout.show(container, GameState.WIN.name());
         } else {
@@ -151,8 +152,8 @@ public class MainContainer extends JFrame {
 
         // 5. Recompte le nombre de dotLeft
 
-        labyrinthPanel.seeDotLeft();
-        if (labyrinthPanel.getDotLeft() == 0) {
+
+        if (labyrinthPanel.getDotLeft() == 0 && gameState != GameState.GAME_OVER) {
             endGame(true);
         }
 

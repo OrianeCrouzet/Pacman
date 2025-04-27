@@ -174,7 +174,7 @@ public class Labyrinth extends JPanel {
         }
     }
 
-    public void seeDotLeft() {
+    public void checkDotLeft() {
         dotLeft = 0;
         for (Cell[] c : maze) {
             for (Cell r : c) {
@@ -183,7 +183,6 @@ public class Labyrinth extends JPanel {
                 }
             }
         }
-        System.out.println(dotLeft);
     }
     
     private void emptyMaze() {
@@ -478,6 +477,7 @@ public class Labyrinth extends JPanel {
 
 
     public int getDotLeft() {
+        checkDotLeft();
         return dotLeft;
     }
 }
