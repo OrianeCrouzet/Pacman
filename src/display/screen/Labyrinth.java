@@ -66,7 +66,7 @@ public class Labyrinth extends JPanel {
     }
 
 
-    private void classicalMaze() {
+    public void classicalMaze() {
         String classicMapPath = "ressources/map/classicMap.txt";
         initCustomMaze(streamStringToIntDoubleArray(Objects.requireNonNull(readFile(classicMapPath))));
         int[] pacman = {13, 23};
@@ -473,6 +473,17 @@ public class Labyrinth extends JPanel {
         emptyMaze();
         edges = new ArrayList<>();
         uf = new UnionFind(rows * cols);
+    }
+
+    public void replaceDot(){
+        for (int c = 0; c < cols; c++) {
+            for (int r = 0; r < rows; r++) {
+                if (maze[c][r].cellval == CellType.EMPTY.getValue()){
+                    maze[c][r] = new Cell();
+                    maze[c][r].setCellVal(CellType.POINT);
+                }
+            }
+        }
     }
 
 

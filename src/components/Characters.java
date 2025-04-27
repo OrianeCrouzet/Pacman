@@ -212,7 +212,12 @@ public class Characters {
 
         //Fantôme spécial
         GhostColor color = allColors[lastIndex];
-        SpecialGhost specialGhost = createSpecialGhostAtRandomPosition(rand, lab, color);
+        SpecialGhost specialGhost;
+        if (abs == null){
+            specialGhost = createSpecialGhostAtRandomPosition(null, lab, color);
+        }else {
+            specialGhost = createSpecialGhostAtRandomPosition(abs[lastIndex],lab,color);
+        }
         ghosts.add(specialGhost);
         System.out.println("Ghost " + color + " créé à (" + specialGhost.c + "," + specialGhost.r + ")");
 
@@ -274,23 +279,30 @@ public class Characters {
         return true;
     }
 
-    //************************************** CREATION DU FANTÔME SPECIAL ***********************************************//*
+    /************************************** CREATION DU FANTÔME SPECIAL ***********************************************/
 
-    private SpecialGhost createSpecialGhostAtRandomPosition(Random rand, Labyrinth lab, GhostColor color) {
+    private SpecialGhost createSpecialGhostAtRandomPosition(int[] pos, Labyrinth lab, GhostColor color) {
+        if(pos != null){
+            return createSpecialGhost(pos[0],pos[1],lab,color);
+        }
         while (true) {
-            int x = rand.nextInt(lab.cols);
-            int y = rand.nextInt(lab.rows);
+            int c = rand.nextInt(lab.cols);
+            int r = rand.nextInt(lab.rows);
 
-            if (isValidPosition(lab, x, y)) {
-                return new SpecialGhost(
-                    x * Cell.SIZE + Cell.SIZE /2,
-                    y * Cell.SIZE + Cell.SIZE /2,
-                    lab,
-                    getGhostImage(color, Direction.LEFT),
-                    color
-                );
+            if (isValidPosition(lab, c, r)) {
+                return createSpecialGhost(c,r,lab,color);
             }
         }
+    }
+
+    private SpecialGhost createSpecialGhost(int c,int r,Labyrinth lab,GhostColor color){
+        return new SpecialGhost(
+                c * Cell.SIZE + Cell.SIZE /2,
+                r * Cell.SIZE + Cell.SIZE /2,
+                lab,
+                getGhostImage(color, Direction.LEFT),
+                color
+        );
     }
 
       /********************************** POSITIONNEMENT DE PACMAN ***********************************************/
@@ -316,14 +328,19 @@ public class Characters {
     }
 
     public void putPacman(Labyrinth lab,int c,int r,Direction direction){
-        this.pacman = new Pacman(
-                c * Cell.SIZE + Cell.SIZE / 2,
-                r * Cell.SIZE + Cell.SIZE / 2,
+        c = c * Cell.SIZE + Cell.SIZE / 2;
+        r = r * Cell.SIZE + Cell.SIZE / 2;
+        if (pacman != null){
+            this.pacman.setPosition(c,r);
+        }else {this.pacman = new Pacman(
+                c,
+                r,
                 lab,
                 getPacmanImage(direction, true),
                 this,
                 direction
         );
+        }
         System.out.println("Pacman initialisé en (" + c + "," + r + ")");
     }
 
